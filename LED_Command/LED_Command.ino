@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// 1 LED G-Code Demo
+// 4 LED G-Code Demo
 // Goal: Test G-code structure with LED and Serial Communication with Python
 // Created 11/05/2022
 //------------------------------------------------------------------------------
@@ -14,9 +14,13 @@
 char buffer[MAX_BUF];  // where we store the message until we get a ';'
 int sofar;  // how much is in the buffer
 char mode_abs=1;  // absolute mode?
+int blink_time = 500;   
 
 long line_number=0;
-const uint8_t RED = 13; // RED Led is connected to D13
+const uint8_t BLUE = 13; // BLUE is connected to D13
+const uint8_t RED = 12; // RED is connected to D12
+const uint8_t YELLOW = 11; // YELLOW is connected to D11
+const uint8_t GREEN = 10; // GREEN is connected to D10
 
 //------------------------------------------------------------------------------
 // STRUCTS
@@ -29,6 +33,17 @@ const uint8_t RED = 13; // RED Led is connected to D13
 // Processing G-Code
 //------------------------------------------------------------------------------
 
+
+void LED_setup(){
+  pinMode(BLUE, OUTPUT); // Configure BLUE LED pin as a digital output
+  pinMode(RED, OUTPUT); // Configure RED LED pin as a digital output
+  pinMode(YELLOW, OUTPUT); // Configure YELLOW LED pin as a digital output
+  pinMode(GREEN, OUTPUT); // Configure GREEN LED pin as a digital output
+  digitalWrite(BLUE, LOW); // Set BLUE LED low initially
+  digitalWrite(RED, LOW); // Set RED LED low initially
+  digitalWrite(YELLOW, LOW); // Set YELLO LED low initially
+  digitalWrite(GREEN, LOW); // Set GREEN LED low initially
+}
 /**
  * prepares the input buffer to receive a new message and tells the serial connected device it is ready for more.
  */
@@ -43,14 +58,28 @@ void ready() {
 void processCommand() {
   int cmd = parseNumber('G',-1);
   switch(cmd) {
-  case  1: LED_enable(); break;
-  case  2: LED_disable();break;
+  case  1: LED_blink(parseNumber('X',0),
+                     parseNumber('Y',0),
+                     parseNumber('Z',0),
+                     parseNumber('E',0));
+  break;
+  case  2: blink_RED(); break;
+    /*
+    parseNumber('X',0),
+          parseNumber('Y',0),
+          parseNumber('Z',0),
+          parseNumber('E',0));
+          */
+        break;                
+  default:  break;
   }
- 
   cmd = parseNumber('M',-1);
   switch(cmd) {
-  case  1:  LED_blink_slow();  break;
-  case  2:  LED_blink_fast();
+  case  1:  LED_enable();  break;
+  case  2:  LED_disable(); break;
+  case  3:  blink_speed(parseNumber('S', 1000)); break; 
+  case  4:  pause(parseNumber('S', 0)); break ;
+  case  100:  help(); break;
   default:  break;
   }
 }
@@ -78,6 +107,10 @@ float parseNumber(char code,float val) {
  * @input code the string.
  * @input val the float.
  */
+
+void pause(int S){
+  delay(S);
+}
 void output(char *code,float val) {
   Serial.print(code);
   Serial.print(val);
@@ -88,36 +121,85 @@ void output(char *code,float val) {
 // G-Code Commands
 //------------------------------------------------------------------------------
 /**
- * Blinks LED every second (slow)
+ * Blinks LED X amount of times based on input 
+ * 
  */
-void LED_blink_slow(){
-  digitalWrite(RED, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
-  digitalWrite(RED, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);                       // wait for a second
-  
+void LED_blink(int X, int Y, int Z, int E){
+  for (int i = 0; i < X; i++){
+    digitalWrite(BLUE, HIGH);
+    delay(blink_time);
+    digitalWrite(BLUE, LOW);
+    delay(blink_time);
+  }
+  for (int i = 0; i < Y; i++){
+    digitalWrite(RED, HIGH);
+    delay(blink_time);
+    digitalWrite(RED, LOW);
+    delay(blink_time);
+  }
+  for (int i = 0; i < Z; i++){
+    digitalWrite(YELLOW, HIGH);
+    delay(blink_time);
+    digitalWrite(YELLOW, LOW);
+    delay(blink_time);
+  }
+  for (int i=0; i < E; i++){
+    digitalWrite(GREEN, HIGH);
+    delay(blink_time);
+    digitalWrite(GREEN, LOW);
+    delay(blink_time);
+  }
 }
+
 /**
- * Blinks LED every half a second (fast)
+ * Blinks RED LED to test speed function  
  */
-void LED_blink_fast(){
-  digitalWrite(RED, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(500);                       // wait for a second
-  digitalWrite(RED, LOW);    // turn the LED off by making the voltage LOW
-  delay(500);                       // wait for a second
-  
+void blink_RED(){
+  for (int i = 0; i < 10; i++){
+    digitalWrite(RED, HIGH);
+    delay(blink_time);
+    digitalWrite(RED, LOW);
+    delay(blink_time);
+  }
 }
 /**
  * Turns on LED 
  */
 void LED_enable(){
    digitalWrite(RED, HIGH);
+   digitalWrite(BLUE, HIGH);
+   digitalWrite(YELLOW, HIGH);
+   digitalWrite(GREEN, HIGH);
 }
 /**
  * Turns off LED 
  */
 void LED_disable(){
    digitalWrite(RED, LOW);
+   digitalWrite(BLUE, LOW);
+   digitalWrite(YELLOW, LOW);
+   digitalWrite(GREEN, LOW);
+}
+
+
+void blink_speed(int S){
+  blink_time = S;
+}
+
+/**
+ * display helpful information
+ */
+void help() {
+  Serial.print(F("Gcode LED DEMO "));
+  Serial.println(F("Commands:"));
+  Serial.println(F("G1 LED_BLINK X[]Y[]Z[]E[]"));
+    Serial.println(F("G2 BLINK_RED"));
+  Serial.println(F("M1; - LED ON"));
+  Serial.println(F("M2; - LED OFF"));
+  Serial.println(F("M3; - SPEED S[ms]"));
+  Serial.println(F("M3; - PAUSE S[ms]"));
+  Serial.println(F("M100; - this help message"));
+
 }
 
 //------------------------------------------------------------------------------
@@ -125,8 +207,10 @@ void LED_disable(){
 //------------------------------------------------------------------------------
 
 void setup() {
-  pinMode(RED, OUTPUT);
+  LED_setup();
   Serial.begin(BAUD);
+  help();
+  ready();
 }
 
 void loop() {
