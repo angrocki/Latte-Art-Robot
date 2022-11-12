@@ -108,9 +108,7 @@ float parseNumber(char code,float val) {
  * @input val the float.
  */
 
-void pause(int S){
-  delay(S);
-}
+
 void output(char *code,float val) {
   Serial.print(code);
   Serial.print(val);
@@ -120,6 +118,10 @@ void output(char *code,float val) {
 //------------------------------------------------------------------------------
 // G-Code Commands
 //------------------------------------------------------------------------------
+
+void pause(int S){
+  delay(S);
+}
 /**
  * Blinks LED X amount of times based on input 
  * 
@@ -196,8 +198,8 @@ void help() {
     Serial.println(F("G2 BLINK_RED"));
   Serial.println(F("M1; - LED ON"));
   Serial.println(F("M2; - LED OFF"));
-  Serial.println(F("M3; - SPEED S[ms]"));
-  Serial.println(F("M3; - PAUSE S[ms]"));
+  Serial.println(F("M3; - SPEED S[]"));
+  Serial.println(F("M3; - PAUSE S[]"));
   Serial.println(F("M100; - this help message"));
 
 }
