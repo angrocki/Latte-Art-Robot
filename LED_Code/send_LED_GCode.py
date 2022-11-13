@@ -2,54 +2,51 @@
 Arduino output: ">"
 Blink 4 LEDS: 
 """
-# hel
+# hello
 
 from serial import Serial, SerialException
 import time
 
 arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
-
+time.sleep(2)
 def blink_xyze(xpos, ypos, zpos, epos):
     while True:
-        bytes = arduino.readline()
-        decoded = bytes[0:len(bytes)].decode("utf-8")
-        if decoded == '>':
-            destination = "G01 X{} Y{} Z{} E{}\n".format(xpos, ypos, zpos, epos)
-            arduino.write(str.encode(destination))
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "G01 X{} Y{} Z{} E{}\n".format(xpos, ypos, zpos, epos)
+            arduino.write(str.encode(message+"\n"))
             break
             
 def speed(s):
     while True:
-        bytes = arduino.readline()
-        decoded = bytes[0:len(bytes)].decode("utf-8")
-        if decoded == '>':
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
             message = "M3 S{}".format(s)
-            arduino.write(str.encode(message))
+            arduino.write(str.encode(message+"\n"))
             break
 def enable_led(): 
-    bytes = arduino.readline()
-    decoded = bytes[0:len(bytes)].decode("utf-8")
-    if decoded == '>':
-        message = "M1"
-        arduino.write(str.encode(message))
+    while True: 
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M1"
+            arduino.write(str.encode(message+"\n"))
+            break
       
         
 def disable_led():
-    while True:
-        bytes = arduino.readline()
-        decoded = bytes[0:len(bytes)-2].decode("utf-8")
-        if decoded == '>':
+    while True: 
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
             message = "M2"
-            arduino.write(str.encode(message))
+            arduino.write(str.encode(message+"\n"))
             break
         
 def delay(s):
     while True:
-        bytes = arduino.readline()
-        decoded = bytes[0:len(bytes)].decode("utf-8")
-        if decoded == '>':
-            message = "M3 S{}".format(s)
-            arduino.write(str.encode(message))
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M4 S{}".format(s)
+            arduino.write(str.encode(message+"\n"))
             break
 while(True):
     try:

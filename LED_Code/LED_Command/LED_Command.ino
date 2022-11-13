@@ -210,7 +210,9 @@ void help() {
 
 void setup() {
   LED_setup();
-  Serial.begin(BAUD);
+//  Serial.begin(BAUD);
+  Serial.begin(115200);
+  delay(2000);
   help();
   ready();
 }
@@ -218,7 +220,8 @@ void setup() {
 void loop() {
   // listen to serial commands
   while(Serial.available() > 0){
-    char c = Serial.read(); 
+//    char c = Serial.read();
+    int c = Serial.read(); 
     Serial.print(c); // Know that we got the message 
     if(sofar < (MAX_BUF-1)){
       buffer[sofar++]=c;
