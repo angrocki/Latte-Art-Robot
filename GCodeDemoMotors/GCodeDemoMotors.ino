@@ -20,10 +20,8 @@ float default_speed = 10;
 float max_speed = 120; 
 float stepmm = 9.375;
 long line_number=0;
-const uint8_t BLUE = 13; // BLUE is connected to D13
-const uint8_t RED = 12; // RED is connected to D12
-const uint8_t YELLOW = 11; // YELLOW is connected to D11
-const uint8_t GREEN = 10; // GREEN is connected to D10
+float feedrate = 200;
+float step_delay = 0;
 
 //------------------------------------------------------------------------------
 // Postion 
@@ -31,6 +29,7 @@ const uint8_t GREEN = 10; // GREEN is connected to D10
 
 float px = 0 ;   //Position X
 float py = 0;    //Position Y
+float reset;
 
 //------------------------------------------------------------------------------
 // STRUCTS
@@ -96,7 +95,16 @@ void ready() {
  * Read the input buffer and find any recognized commands.  One G or M command per line.
  */
 void processCommand() {
-  int cmd = parseNumber('M',-1);
+  int cmd = parseNumber('G',-1);
+  switch(cmd) {
+  case  1: { // line
+    line( parseNumber('X',px),
+          parseNumber('Y',py ));
+    break;
+    default:  break;
+  }
+    }
+  cmd = parseNumber('M',-1);
   switch(cmd) {
   case  1:  one_revX();  break;
   case  2:  one_revY(); break;
@@ -140,9 +148,77 @@ void output(char *code,float val) {
   Serial.print(" ");
 }
 
+
+
 //------------------------------------------------------------------------------
 // G-Code Commands
 //------------------------------------------------------------------------------
+/**
+  * Set feedrate and step_delay based on the value entered.
+  * @param: fr float representing new feedrate
+  */
+void set_feedrate(float fr) {
+  step_delay = 1000000.0/fr;
+  feedrate = fr;
+}
+/**
+  * Using ABSOLUTE positions, move to inputted x,y coordinates.
+  * This is done using Breseham's Line Algorithm.
+  *
+  */
+void line(int newx, int newy) {
+
+  // Find relative distance to move
+  float dx = newx - px;
+  float dy = newy - py;
+
+  int x_dir;
+  int y_dir; 
+
+  // Set direction of x movement
+  if (newx > px) {
+    x_dir = 1;
+  } else {
+    x_dir = -1;
+  }
+  // Set direction of y movement
+  if (newy > py) {
+    y_dir = 1;
+  } else {
+    y_dir = -1;
+  }
+
+  // Implement Breseham's Algorithm
+  if (dx > dy) {
+    reset = dx / 2;
+    for (int i = 0; i < dx; i++) {
+      one_stepX(x_dir);
+      reset += dy;
+      if (reset >= dx) {
+        reset -= dx;
+        one_stepY(y_dir);
+      }
+      pause(step_delay);
+    }
+  }
+  else {
+    reset = dy / 2;
+    for (int i = 0; i < dy; i++) {
+      one_stepY(y_dir);   
+      reset += dx;
+      if (reset >= dy) {
+        reset -= dy;
+        one_stepX(x_dir);
+      }
+      pause(step_delay);
+    }
+  }
+
+  // Set new positions
+  px = newx;
+  py = newy;
+}
+
 
 void pause(int S){
   delay(S);
@@ -166,6 +242,16 @@ void one_revX(){
 void one_revY(){;
   Y.rotate(360);
   py = py + 38.4;
+}
+
+void one_stepX(int dir){
+  X.rotate(stepmm * dir);
+  px = px + 1;
+}
+
+void one_stepY(int dir){
+  X.rotate(stepmm * dir);
+  py = py + 1;
 }
 
 void set_pos(int newx, int newy){
