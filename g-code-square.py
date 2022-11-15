@@ -47,10 +47,10 @@ while(True):
         if int(cmd_id)!= 1:
             print ("Values other than 1 are ignored.")
         else: 
+            move_x(100)
+            move_y(100)
             move_x(50)
             move_y(50)
-            move_x(-50)
-            move_y(-50)
             break
     except ValueError:
         print ("You must enter integer value 1")
