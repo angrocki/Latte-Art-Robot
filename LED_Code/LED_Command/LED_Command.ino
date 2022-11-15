@@ -199,7 +199,7 @@ void help() {
   Serial.println(F("M1; - LED ON"));
   Serial.println(F("M2; - LED OFF"));
   Serial.println(F("M3; - SPEED S[]"));
-  Serial.println(F("M3; - PAUSE S[]"));
+  Serial.println(F("M4; - PAUSE S[]"));
   Serial.println(F("M100; - this help message"));
 
 }
