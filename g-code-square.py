@@ -52,16 +52,13 @@ def make_circle(radius, points):
     # origin is 0
     x = []
     y = []
-    i = 0
+    step_size = 2*math.pi/points
     step = 0
-    for i in range(points):
-        x[i] = math.cos(step) + radius 
-        y[i] = math.sin(step) + radius 
-        step = step + math.pi / points /2 
-    return x, y
-
-
-
+    for _ in range(points):
+        round(math.cos(step) + radius, 2)
+        x.append(round(math.cos(step) + radius, 2)) 
+        y.append(round(math.sin(step) + radius, 2))
+        step = step + step_size 
         
 while(True):
     try:
