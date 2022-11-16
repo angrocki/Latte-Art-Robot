@@ -4,6 +4,7 @@
 // Created 11/05/2022
 //------------------------------------------------------------------------------
 #include <Arduino.h>
+#include "MultiDriver.h"
 //------------------------------------------------------------------------------
 // CONSTANTS
 //------------------------------------------------------------------------------
@@ -41,6 +42,8 @@ float reset;
 //------------------------------------------------------------------------------
 // Processing G-Code
 //------------------------------------------------------------------------------
+// INITIALIZING Solenoid
+#define Solenoid        53
 // INITIALIZING MOTOR PINS 
 
 #define MOTOR_STEPS 200
@@ -67,12 +70,14 @@ float reset;
 // STEPPER MOTOR OBJECTS
 A4988 X(MOTOR_STEPS, X_DIR_PIN, X_STEP_PIN, X_ENABLE_PIN, MS1, MS2, MS3);
 A4988 Y(MOTOR_STEPS, Y_DIR_PIN, Y_STEP_PIN, Y_ENABLE_PIN, MS1, MS2, MS3);
+
+MultiDriver XY(X, Y);
 //------------------------------------------------------------------------------
 
 
 void Motor_setup() {
-  X.begin(RPM, MICROSTEPS);
-  Y.begin(RPM, MICROSTEPS);
+  X.begin(default_speed, MICROSTEPS);
+  Y.begin(default_speed, MICROSTEPS);
 
   X.setEnableActiveState(LOW);
   Y.setEnableActiveState(LOW);
@@ -101,6 +106,7 @@ void processCommand() {
     line( parseNumber('X',px),
           parseNumber('Y',py ));
     break;
+   case 28: calibrateOrigin(); break;
     default:  break;
   }
     }
@@ -112,6 +118,8 @@ void processCommand() {
   case 4: move_Y(parseNumber('Y', py)); break;
   case 5: set_pos(parseNumber('X', px),
                   parseNumber('Y', py)); break;
+  case 6: enable_solenoid();
+  case 7: disable_solenoid();
   case  100:  help(); break;
   default:  break;
   }
@@ -167,57 +175,45 @@ void set_feedrate(float fr) {
   *
   */
 void line(int newx, int newy) {
-
   // Find relative distance to move
-  float dx = newx - px;
-  float dy = newy - py;
-
-  int x_dir;
-  int y_dir; 
-
-  // Set direction of x movement
-  if (newx > px) {
-    x_dir = 1;
-  } else {
-    x_dir = -1;
-  }
-  // Set direction of y movement
-  if (newy > py) {
-    y_dir = 1;
-  } else {
-    y_dir = -1;
-  }
-
-  // Implement Breseham's Algorithm
-  if (dx > dy) {
-    reset = dx / 2;
-    for (int i = 0; i < dx; i++) {
-      one_stepX(x_dir);
-      reset += dy;
-      if (reset >= dx) {
-        reset -= dx;
-        one_stepY(y_dir);
-      }
-      pause(step_delay);
-    }
-  }
-  else {
-    reset = dy / 2;
-    for (int i = 0; i < dy; i++) {
-      one_stepY(y_dir);   
-      reset += dx;
-      if (reset >= dy) {
-        reset -= dy;
-        one_stepX(x_dir);
-      }
-      pause(step_delay);
-    }
-  }
-
+  float dx = (newx - px) * stepmm;
+  float dy = (newy - py) * stepmm;
+  XY.rotate(dx,dy);
   // Set new positions
   px = newx;
   py = newy;
 }
+
+void calibrateOrigin(){
+  int min = digitalRead(X_MIN_PIN);
+  bool loop = true; 
+  while (loop) {
+     min = digitalRead(X_MIN_PIN);
+     Serial.println(min);
+      if (min == 1) {
+        X.rotate(-stepmm);
+      }
+      if (min == 0) {
+        loop = false;
+      }
+  }
+  px = 0;
+  min = digitalRead(Y_MIN_PIN);
+  loop = true; 
+  while (loop) {
+     min = digitalRead(Y_MIN_PIN);
+     Serial.println(min);
+      if (min == 1) {
+        Y.rotate(stepmm);
+      }
+      if (min == 0) {
+        loop = false;
+      }
+  }
+  py = 0;
+
+  }
+
 
 
 void pause(int S){
@@ -263,6 +259,12 @@ void print_pos(){
   Serial.println(px);
   Serial.println(py);
 }
+
+void enable_solenoid(){
+  
+}
+
+
 
 /**
  * display helpful information
