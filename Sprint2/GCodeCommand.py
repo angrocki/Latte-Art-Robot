@@ -1,6 +1,6 @@
 """
 Arduino output: ">"
-Blink 4 LEDS: 
+Moves 2 Motor Gantry: 
 """
 # hello
 
