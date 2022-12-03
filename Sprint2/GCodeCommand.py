@@ -10,6 +10,8 @@ import math
 
 arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
 time.sleep(2)
+
+
 def move_line(xpos, ypos):
     while True:
         line = arduino.readline().decode().rstrip()
