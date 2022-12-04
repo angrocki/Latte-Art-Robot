@@ -7,8 +7,57 @@ import math
 
 arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
 time.sleep(2)
+def go_home():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "G27"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def go_cup_origin():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "G28"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def move_XYZT(xpos, ypos, zpos, tilt):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "G1 X{} Y{} Z{} T{}\n".format(xpos,ypos,zpos,tilt)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
 
-def move_line(xpos, ypos):
+def move_controller(xpos=None, ypos=None,zpos=None,tilt=None):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        message = "G1 "
+        if line == '>':
+            if type(xpos) == int:
+                message.append("X{} ")
+            if type(ypos) == int:
+                message.append("Y{} ")
+            if type(zpos) == int:
+                message.append("Z{} ")
+            if type(tilt) == int:
+                message.append("T{}")
+            
+            message.append("\n")
+
+
+def move_XYT(xpos, ypos, tilt):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "G1 X{} Y{} T{}\n".format(xpos,ypos,tilt)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def move_XY(xpos, ypos):
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -16,43 +65,77 @@ def move_line(xpos, ypos):
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+def tilt(angle):
+     while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "G5 T{}\n".format(angle)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+    
 def move_x(xpos):
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "M3 X{}\n".format(xpos)
+            message = "G1 X{}\n".format(xpos)
+            print(message)
             arduino.write(str.encode(message+"\n"))
             break
 def set_pos(xpos, ypos):
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "M5 X{} Y{}\n".format(xpos, ypos)
+            message = "G92 X{} Y{}\n".format(xpos, ypos)
+            print(message)
             arduino.write(str.encode(message+"\n"))
             break
-            
+def set_speed(speed):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M220 S{}\n".format(speed)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
 def move_y(y_pos):
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "M4 Y{}".format(y_pos)
+            message = "M1 Y{}".format(y_pos)
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
-def rotate_x(): 
-    while True: 
+def move_z(z_pos):
+    while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "M1"
+            message = "M1 Z{}".format(z_pos)
+            print(message)
             arduino.write(str.encode(message+"\n"))
             break
-      
-        
-def rotate_y():
-    while True: 
+def enable_solenoid():
+    while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "M2"
+            message = "M380"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def disable_solenoid():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M10"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def disable_Z():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M11"
+            print(message)
             arduino.write(str.encode(message+"\n"))
             break
 def make_circle(radius, points): 

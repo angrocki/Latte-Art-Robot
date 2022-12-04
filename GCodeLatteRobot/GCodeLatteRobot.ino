@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-// 2 Motor G-Code Demo
-// Goal: Test G-code structure with LED and Serial Communication with Python
+// G-Code for Latte Art Robot
+// Goal: Create multiple latte Art designs controlled by serial communication with Python
 // Created 11/05/2022
 //------------------------------------------------------------------------------
 #include <Arduino.h>
@@ -26,11 +26,25 @@ float feedrate = 200;
 float step_delay = 0;
 
 //------------------------------------------------------------------------------
+// LOCAL VARIABLES
+//------------------------------------------------------------------------------
+
+//axis limit switch local variables
+
+int x_switch;
+int y_switch;
+int z_switch;
+int steps_x = 1;
+int steps_y = 1;
+
+//------------------------------------------------------------------------------
 // Postion 
 //------------------------------------------------------------------------------
 
 float px = 0 ;   //Position X
 float py = 0;    //Position Y
+float pz = 0;    //Position Y
+float pt = 0;    //Position T
 float reset;
 
 //------------------------------------------------------------------------------
@@ -63,6 +77,22 @@ float reset;
 #define Y_MIN_PIN          14
 #define Y_MAX_PIN          -1 //PIN 15 is used
 
+#define Z_STEP_PIN         46
+#define Z_DIR_PIN          48
+#define Z_ENABLE_PIN       62
+#define Z_MIN_PIN          18
+#define Z_MAX_PIN          -1 //PIN 19 is used
+
+//extruder 1
+#define E0_STEP_PIN        26
+#define E0_DIR_PIN         28
+#define E0_ENABLE_PIN      24
+
+//extruder 2
+#define E1_STEP_PIN        36
+#define E1_DIR_PIN         34
+#define E1_ENABLE_PIN      30
+
 #include "A4988.h"        // drivers type 
 #define MS1 10
 #define MS2 11
@@ -70,24 +100,43 @@ float reset;
 
 // STEPPER MOTOR OBJECTS
 A4988 X(MOTOR_STEPS, X_DIR_PIN, X_STEP_PIN, X_ENABLE_PIN, MS1, MS2, MS3);
-A4988 Y(MOTOR_STEPS, Y_DIR_PIN, Y_STEP_PIN, Y_ENABLE_PIN, MS1, MS2, MS3);
+A4988 Y_1(MOTOR_STEPS, Y_DIR_PIN, Y_STEP_PIN, Y_ENABLE_PIN, MS1, MS2, MS3);
+A4988 Y_2(MOTOR_STEPS, E1_DIR_PIN, E1_STEP_PIN, E1_ENABLE_PIN, MS1, MS2, MS3);
+A4988 Z(MOTOR_STEPS, Z_DIR_PIN, Z_STEP_PIN, Z_ENABLE_PIN, MS1, MS2, MS3);
+A4988 T(MOTOR_STEPS, E0_DIR_PIN, E0_STEP_PIN, E0_ENABLE_PIN, MS1, MS2, MS3);
 
-MultiDriver XY(X, Y);
+MultiDriver controller(X, Y_1, Y_2, Z, T);
 //------------------------------------------------------------------------------
 
 
 void motor_setup() {
   X.begin(default_speed, MICROSTEPS);
-  Y.begin(default_speed, MICROSTEPS);
+  Y_1.begin(default_speed, MICROSTEPS);
+  Y_2.begin(default_speed, MICROSTEPS);
+  Z.begin(default_speed, MICROSTEPS);
+  T.begin(default_speed, MICROSTEPS);
 
   X.setEnableActiveState(LOW);
-  Y.setEnableActiveState(LOW);
+  Y_1.setEnableActiveState(LOW);
+  Y_2.setEnableActiveState(LOW);
+  Z.setEnableActiveState(LOW);
+  T.setEnableActiveState(LOW);
 
   X.enable();
-  Y.enable();
+  Y_1.enable();
+  Y_2.enable();
+  Z.enable();
+  T.disable();
+
+  pinMode(X_MIN_PIN, INPUT);
+  pinMode(Y_MIN_PIN, INPUT);
+  pinMode(Z_MIN_PIN, INPUT);
+  
 }
+
 void solenoid_setup(){
   pinMode(SOLENOID_PIN, OUTPUT);
+  digitalWrite(SOLENOID_PIN, LOW);
 }
 
 
@@ -108,21 +157,24 @@ void processCommand() {
   switch(cmd) {
   case  1: { // line
     line( parseNumber('X',px),
-          parseNumber('Y',py ));
+          parseNumber('Y',py)
+          );
     break;
-   case 28: calibrateOrigin(); break;
-    default:  break;
+   case 5; tilt(parseNumber('T',px))
+   case 27: go_home(); break;
+   case 28: cup_origin(); break;
+   case 92: set_pos(parseNumber('X', px),
+                  parseNumber('Y', py)); break;
+   default:  break;
   }
     }
   cmd = parseNumber('M',-1);
   switch(cmd) {
-  case  1:  one_revX();  break;
-  case  2:  one_revY(); break;
-  case 3: move_X(parseNumber('X',px)); break;
-  case 4: move_Y(parseNumber('Y', py)); break;
-  case 5: set_pos(parseNumber('X', px),
-                  parseNumber('Y', py)); break;
-  case 6: enable_solenoid();
+  case 10: enable_Z(); break;
+  case 11: disable_Z(); break;
+  case 220: set_speed(parseNumber('S',current_speed)); break;
+  case 380: enable_solenoid(); break; 
+  case 381: disable_solenoid(); break; 
   case  100:  help(); break;
   default:  break;
   }
@@ -179,78 +231,83 @@ void set_feedrate(float fr) {
   */
 void line(int newx, int newy) {
   // Find relative distance to move
-  float dx = (newx - px) * stepmm;
-  float dy = (newy - py) * stepmm;
-  XY.rotate(dx,dy);
+  int dx = convert_mm(newx - px);
+  int dy = convert_mm(newy - py);
+  controller.rotate(dx, dy, dy, 0, 0);
   // Set new positions
   px = newx;
   py = newy;
 }
 
-void calibrateOrigin(){
-  int min = digitalRead(X_MIN_PIN);
-  bool loop = true; 
-  while (loop) {
-     min = digitalRead(X_MIN_PIN);
-     Serial.println(min);
-      if (min == 1) {
-        X.rotate(-stepmm);
-      }
-      if (min == 0) {
-        loop = false;
-      }
-  }
-  px = 0;
-  min = digitalRead(Y_MIN_PIN);
-  loop = true; 
-  while (loop) {
-     min = digitalRead(Y_MIN_PIN);
-     Serial.println(min);
-      if (min == 1) {
-        Y.rotate(stepmm);
-      }
-      if (min == 0) {
-        loop = false;
-      }
-  }
-  py = 0;
+int convert_mm(int dist) {
+  // Converts a given distance (in mm) to degrees to rotate motors
+  int degree = dist * 9.375;
+  return degree;
+}
 
+void tilt (int angle){
+  dt = pt-angle;
+  controller.rotate(0, 0, 0, 0, dt);
+  pt = angle;
+  
+}
+
+int convert_Z_mm(int dist) {
+  // Converts a given distance (in mm) to degrees to rotate motors
+  int degree = dist * 1.7;
+  return degree;
+}
+
+void x_origin() {
+
+  // MOVES TO ORIGIN
+   while (steps_x == 1) {
+    X.rotate(convert_mm(-40));
+    steps_x = 0;
   }
+}
+
+void y_origin() {
+
+  while (steps_y == 1) {
+    controller.rotate(0,convert_mm(69),convert_mm(69),0,0);
+    steps_y = 0;
+  }
+}
+
+void go_home(){
+    // Z-AXIS ZEROING
+    z_switch = digitalRead(Z_MIN_PIN);                // reads the pin 
+    while (z_switch == 1) {                           // while limit is inactivated 
+        z_switch = digitalRead(Z_MIN_PIN);
+        controller.rotate(0,0,0,-1,0);                // move z-axis motor
+    }
+    
+    // X-AXIS ZEROING
+    x_switch = digitalRead(X_MIN_PIN);                // reads the pin 
+    while (x_switch == 1) {                           // while limit is inactivated 
+      x_switch = digitalRead(X_MIN_PIN);
+      controller.rotate(1,0,0,0,0);                   // move x-axis motor
+    }
+    
+    // Y-AXIS ZEROING
+    y_switch = digitalRead(Y_MIN_PIN);                // reads the pin 
+    while (y_switch == 1) {                           // while limit is inactivated 
+      y_switch = digitalRead(Y_MIN_PIN);
+      controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
+    }
+    }
+  void cup_origin(){
+    x_origin();
+    y_origin();
+    px = 0;
+    py = 0;  
+}
 
 
 
 void pause(int S){
   delay(S);
-}
-void move_X( int newx){
-  float dx = newx-px;
-  X.rotate(dx * stepmm);
-  px = newx;
-}
-
-void move_Y( int newy){
-  float dy = newy-py;
-  Y.rotate(dy * stepmm);
-  py = newy;
-}
-void one_revX(){
-  X.rotate(360);
-  px = px + 38.4;
-}
-
-void one_revY(){;
-  Y.rotate(360);
-  py = py + 38.4;
-}
-
-void one_stepX(int dir){
-  X.rotate(stepmm * dir);
-  px = px + 1;
-}
-
-void one_stepY(int dir){
-  X.rotate(stepmm * dir);
-  py = py + 1;
 }
 
 void set_pos(int newx, int newy){
@@ -264,7 +321,33 @@ void print_pos(){
 }
 
 void enable_solenoid(){
+  digitalWrite(SOLENOID_PIN, HIGH);
   
+}
+void disable_solenoid(){
+  digitalWrite(SOLENOID_PIN, LOW);
+  
+}
+void enable_Z(){
+  Z.enable();
+}
+
+void disable_Z(){
+  Z.disable();
+}
+void set_speed(int s) {
+  if (s > max_speed) {
+    current_speed = max_speed;
+  }
+  else if (s < 0) {
+    current_speed = 0;
+  }
+  else{
+    current_speed = s;
+  }
+  X.setRPM(s);
+  Y_1.setRPM(s);
+  Y_2.setRPM(s);
 }
 /** 
  *  To Do: 
@@ -301,8 +384,8 @@ void help() {
 //------------------------------------------------------------------------------
 
 void setup() {
-//  LED_setup();
   motor_setup();
+  solenoid_setup();
   Serial.begin(BAUD);
   help();
   ready();
