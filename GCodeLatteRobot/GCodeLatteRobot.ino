@@ -162,7 +162,6 @@ void processCommand() {
           parseNumber('T',pt)
           );
     break;
-   case 5; tilt(parseNumber('T',px))
    case 27: go_home(); break;
    case 28: cup_origin(); break;
    case 92: set_pos(parseNumber('X', px),
@@ -259,12 +258,6 @@ int convert_mm(int dist) {
   return degree;
 }
 
-void tilt (int angle){
-  dt = pt-angle;
-  controller.rotate(0, 0, 0, 0, dt);
-  pt = angle;
-  
-}
 
 int convert_Z_mm(int dist) {
   // Converts a given distance (in mm) to degrees to rotate motors
