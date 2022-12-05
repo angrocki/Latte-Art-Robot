@@ -18,11 +18,11 @@ def base_simple():
     circles = 3
     move_XY(x[0],y[0])
     set_speed(75)
-    #enable_solenoid()
+    enable_solenoid()
     for i in range(circles):
         for i in range(len(x)):
             move_XY(x[i],y[i])
-    #disable_solenoid()
+    disable_solenoid()
     set_speed(10)
     move_XY(0,0)
 """
@@ -34,7 +34,7 @@ def base_tilt():
     #go_cup_origin()
     diameter = 30 ##mm
     radius = diameter/2
-    points = 100
+    points = 2000
     x, y = make_circle(radius, points)
     circles = 3
     move_XY(x[0],y[0])

@@ -127,7 +127,7 @@ def disable_solenoid():
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "M10"
+            message = "M381"
             print(message)
             arduino.write(str.encode(message+"\n"))
             break

@@ -58,7 +58,7 @@ float reset;
 // Processing G-Code
 //------------------------------------------------------------------------------
 // INITIALIZING Solenoid
-#define SOLENOID_PIN           53
+#define SOLENOID_PIN           32
 // INITIALIZING MOTOR PINS 
 
 #define MOTOR_STEPS 200
@@ -268,18 +268,13 @@ int convert_Z_mm(int dist) {
 void x_origin() {
 
   // MOVES TO ORIGIN
-   while (steps_x == 1) {
-    X.rotate(convert_mm(-40));
-    steps_x = 0;
-  }
+    X.rotate(convert_mm(-px));    
+    px = 0;
 }
 
 void y_origin() {
-
-  while (steps_y == 1) {
-    controller.rotate(0,convert_mm(69),convert_mm(69),0,0);
-    steps_y = 0;
-  }
+    controller.rotate(0,convert_mm(-py),convert_mm(-py),0,0);
+    py = 0; 
 }
 
 void go_home(){
@@ -303,12 +298,12 @@ void go_home(){
       y_switch = digitalRead(Y_MIN_PIN);
       controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
     }
+    px=40;
+    py=-69;
     }
   void cup_origin(){
     x_origin();
-    y_origin();
-    px = 0;
-    py = 0;  
+    y_origin(); 
 }
 
 
