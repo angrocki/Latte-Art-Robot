@@ -4,8 +4,9 @@ List of G-Code Commands. Communicates with Adrino G-Code
 from serial import Serial
 import time
 import math
-
-arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
+#/dev/cu.usbmodem1101 AN
+#COM16 Jacob
+arduino = Serial(port = 'COM16', baudrate=115200, timeout=0)
 time.sleep(2)
 def go_home():
     while True:
