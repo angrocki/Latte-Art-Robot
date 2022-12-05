@@ -156,8 +156,10 @@ void processCommand() {
   int cmd = parseNumber('G',-1);
   switch(cmd) {
   case  1: { // line
-    line( parseNumber('X',px),
-          parseNumber('Y',py)
+    move_motors( parseNumber('X',px),
+          parseNumber('Y',py),
+          parseNumber('Z',pz),
+          parseNumber('T',pt)
           );
     break;
    case 5; tilt(parseNumber('T',px))
@@ -238,7 +240,19 @@ void line(int newx, int newy) {
   px = newx;
   py = newy;
 }
-
+void move_motors(int newx, int newy, int newz, int newt){
+  int dx = convert_mm(newx - px);
+  int dy = convert_mm(newy - py);
+  int dz = convert_Z_mm(newz -pz);
+  int dt = pt - newt;
+  controller.rotate(dx, dy, dy, dz, dt);
+   // Set new positions
+  px = newx;
+  py = newy;
+  pz = newz;
+  pt = newt;
+  
+}
 int convert_mm(int dist) {
   // Converts a given distance (in mm) to degrees to rotate motors
   int degree = dist * 9.375;
