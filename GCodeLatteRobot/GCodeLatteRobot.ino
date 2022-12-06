@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 #include <Arduino.h>
 #include "MultiDriver.h"
+#include "Adafruit_VL53L0X.h"
 //------------------------------------------------------------------------------
 // CONSTANTS
 //------------------------------------------------------------------------------
@@ -106,6 +107,9 @@ A4988 Z(MOTOR_STEPS, Z_DIR_PIN, Z_STEP_PIN, Z_ENABLE_PIN, MS1, MS2, MS3);
 A4988 T(MOTOR_STEPS, E0_DIR_PIN, E0_STEP_PIN, E0_ENABLE_PIN, MS1, MS2, MS3);
 
 MultiDriver controller(X, Y_1, Y_2, Z, T);
+
+// SENSOR OBJECT
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 //------------------------------------------------------------------------------
 
 
@@ -383,6 +387,21 @@ void set_speed(int s) {
   X.setRPM(s);
   Y_1.setRPM(s);
   Y_2.setRPM(s);
+}
+
+void read_sensor(){
+  VL53L0X_RangingMeasurementData_t measure;
+    
+  Serial.print("Reading a measurement... ");
+  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+
+  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
+    Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
+  } else {
+    Serial.println(" out of range ");
+  }
+    
+  delay(100);
 }
 /** 
  *  To Do: 
