@@ -7,7 +7,7 @@ Pour Straight no squickly
 """
 def heart_easy(): 
     angle = 40
-    tilt(angle)
+    move_tilt(angle)
     #Move distance center function
     #Move to above the cup
     move_z(31)

@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 #include <Arduino.h>
 #include "MultiDriver.h"
+#include "Adafruit_VL53L0X.h"
 //------------------------------------------------------------------------------
 // CONSTANTS
 //------------------------------------------------------------------------------
@@ -106,6 +107,9 @@ A4988 Z(MOTOR_STEPS, Z_DIR_PIN, Z_STEP_PIN, Z_ENABLE_PIN, MS1, MS2, MS3);
 A4988 T(MOTOR_STEPS, E0_DIR_PIN, E0_STEP_PIN, E0_ENABLE_PIN, MS1, MS2, MS3);
 
 MultiDriver controller(X, Y_1, Y_2, Z, T);
+
+// SENSOR OBJECT
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 //------------------------------------------------------------------------------
 
 
@@ -173,6 +177,11 @@ void processCommand() {
   switch(cmd) {
   case 10: enable_Z(); break;
   case 11: disable_Z(); break;
+  case 12: enable_T(); break;
+  case 13: enable_X(); break;
+  case 14: disable_X(); break;
+  case 15: enable_Y(); break;
+  case 16: disable_Y(); break;
   case 220: set_speed(parseNumber('S',current_speed)); break;
   case 380: enable_solenoid(); break; 
   case 381: disable_solenoid(); break; 
@@ -337,6 +346,34 @@ void enable_Z(){
 void disable_Z(){
   Z.disable();
 }
+
+void enable_T(){
+  T.enable();
+}
+
+void disable_T(){
+  T.disable();
+  
+}
+void enable_X(){
+  X.enable();
+}
+
+void disable_X(){
+  X.disable();
+  
+}
+
+void enable_Y(){
+  Y_1.enable();
+  Y_2.enable();
+}
+
+void disable_Y(){
+  Y_1.disable();
+  Y_2.disable();
+  
+}
 void set_speed(int s) {
   if (s > max_speed) {
     current_speed = max_speed;
@@ -350,6 +387,21 @@ void set_speed(int s) {
   X.setRPM(s);
   Y_1.setRPM(s);
   Y_2.setRPM(s);
+}
+
+void read_sensor(){
+  VL53L0X_RangingMeasurementData_t measure;
+    
+  Serial.print("Reading a measurement... ");
+  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+
+  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
+    Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
+  } else {
+    Serial.println(" out of range ");
+  }
+    
+  delay(100);
 }
 /** 
  *  To Do: 
@@ -390,6 +442,12 @@ void setup() {
   solenoid_setup();
   Serial.begin(BAUD);
   help();
+  go_home();
+  X.disable();
+  Y_1.disable();
+  Y_2.disable();
+  Z.disable();
+  T.disable();
   ready();
 }
 
