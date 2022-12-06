@@ -4,6 +4,7 @@ List of G-Code Commands. Communicates with Adrino G-Code
 from serial import Serial
 import time
 import math
+import numpy as np
 #/dev/cu.usbmodem1101 AN
 #COM16 Jacob
 arduino = Serial(port = 'COM16', baudrate=115200, timeout=0)
@@ -233,4 +234,13 @@ def make_circle(radius, points):
         x.append(round(math.cos(step) * radius, 2)) 
         y.append(round(math.sin(step) * radius, 2))
         step = step + step_size 
+    return x, y
+
+def make_sine(amplitude, frequency, distance, points):
+    x = []
+    y = []
+
+    x = np.linspace(0,distance,points)
+    for i in range(0,len(x)):
+        y.append(amplitude*math.sin(frequency*x[i]))
     return x, y

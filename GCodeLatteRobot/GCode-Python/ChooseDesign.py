@@ -4,7 +4,7 @@ Functions are imported from different files.
 '''
 from Heart import heart_easy, heart_hard
 from Base import base_simple,  base_complicated
-from Rosetta import rosetta_easy, rosetta_hard 
+from Rosetta import rosetta_easy, rosetta_hard,test
 
 while(True):
     try:
@@ -26,5 +26,7 @@ while(True):
             rosetta_easy()
         elif int(cmd_id) == 6:  
             rosetta_hard()
+        elif int(cmd_id) == 7:
+            test()
     except ValueError:
         print ("You must enter integer value 1")
