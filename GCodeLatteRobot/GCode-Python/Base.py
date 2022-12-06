@@ -15,9 +15,9 @@ def base_simple():
     radius = diameter/2
     points = 50
     x, y = make_circle(radius, points)
-    circles = 3
+    circles = 2
     move_XY(x[0],y[0])
-    set_speed(75)
+    set_speed(70)
     enable_solenoid()
     for i in range(circles):
         for i in range(len(x)):
