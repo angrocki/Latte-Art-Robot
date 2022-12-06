@@ -6,7 +6,7 @@ import time
 import math
 #/dev/cu.usbmodem1101 AN
 #COM16 Jacob
-arduino = Serial(port = 'COM16', baudrate=115200, timeout=0)
+arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
 time.sleep(2)
 def go_home():
     while True:
@@ -67,14 +67,13 @@ def move_XY(xpos, ypos):
             arduino.write(str.encode(message+"\n"))
             break
 def tilt(angle):
-     while True:
+    while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "G5 T{}\n".format(angle)
+            message = "G1 T{}\n".format(angle)
             print(message)
             arduino.write(str.encode(message+"\n"))
-            break
-    
+            break 
 def move_x(xpos):
     while True:
         line = arduino.readline().decode().rstrip()
@@ -136,6 +135,30 @@ def disable_Z():
         line = arduino.readline().decode().rstrip()
         if line == '>':
             message = "M11"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def enable_Z():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M10"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def enable_T():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M12"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def disable_T():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M13"
             print(message)
             arduino.write(str.encode(message+"\n"))
             break

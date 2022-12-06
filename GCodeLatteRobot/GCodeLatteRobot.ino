@@ -173,6 +173,11 @@ void processCommand() {
   switch(cmd) {
   case 10: enable_Z(); break;
   case 11: disable_Z(); break;
+  case 12: enable_T(); break;
+  case 13: enable_X(); break;
+  case 14: disable_X(); break;
+  case 15: enable_Y(); break;
+  case 16: disable_Y(); break;
   case 220: set_speed(parseNumber('S',current_speed)); break;
   case 380: enable_solenoid(); break; 
   case 381: disable_solenoid(); break; 
@@ -337,6 +342,34 @@ void enable_Z(){
 void disable_Z(){
   Z.disable();
 }
+
+void enable_T(){
+  T.enable();
+}
+
+void disable_T(){
+  T.disable();
+  
+}
+void enable_X(){
+  X.enable();
+}
+
+void disable_X(){
+  X.disable();
+  
+}
+
+void enable_Y(){
+  Y_1.enable();
+  Y_2.enable();
+}
+
+void disable_Y(){
+  Y_1.disable();
+  Y_2.disable();
+  
+}
 void set_speed(int s) {
   if (s > max_speed) {
     current_speed = max_speed;
@@ -390,6 +423,12 @@ void setup() {
   solenoid_setup();
   Serial.begin(BAUD);
   help();
+  go_home();
+  X.disable();
+  Y_1.disable();
+  Y_2.disable();
+  Z.disable();
+  T.disable();
   ready();
 }
 

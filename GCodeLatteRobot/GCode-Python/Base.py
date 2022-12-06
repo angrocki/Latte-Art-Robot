@@ -17,7 +17,7 @@ def base_simple():
     x, y = make_circle(radius, points)
     circles = 3
     move_XY(x[0],y[0])
-    set_speed(75)
+    set_speed(10)
     enable_solenoid()
     for i in range(circles):
         for i in range(len(x)):
