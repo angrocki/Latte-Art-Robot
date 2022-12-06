@@ -162,6 +162,48 @@ def disable_T():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
+def enable_X():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M14"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def disable_X():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M15"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+
+def enable_Y():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M16"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def disable_Y():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M17"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def delay(ms):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M6 S{}".format(ms)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
 def make_circle(radius, points): 
     # origin is 0
     x = []

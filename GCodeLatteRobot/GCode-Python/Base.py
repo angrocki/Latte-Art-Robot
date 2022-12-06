@@ -8,6 +8,9 @@ Base_Simple
 No Tilt, no changing Height, only circles until a certain time/circles/height
 """
 def base_simple(): 
+    enable_X()
+    enable_Y()
+    enable_Z()
     go_home()
     disable_Z()
     go_cup_origin()
