@@ -6,6 +6,7 @@ from GCodeCommands import *
 Pour Straight no squickly 
 """
 def heart_easy(): 
+    enable_T()
     set_speed_T(10)
     angle = 40
     tilt(angle)
@@ -25,6 +26,11 @@ def heart_easy():
     set_speed(75)
     enable_solenoid()
     move_x(-10)
+    disable_solenoid()
+    disable_T()
+    disable_X()
+    disable_Y()
+    disable_Z()
     
     
 
