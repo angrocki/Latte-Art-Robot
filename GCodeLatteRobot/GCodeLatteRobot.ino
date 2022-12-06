@@ -17,7 +17,8 @@
 char buffer[MAX_BUF];  // where we store the message until we get a ';'
 int sofar;  // how much is in the buffer
 char mode_abs=1;  // absolute mode?
-float default_speed = 10;  
+float default_speed = 10; 
+float default_speed_z = 30;  
 float current_speed = 10;
 float current_speed_T = 10;
 float current_speed_Z = 10;
@@ -115,7 +116,7 @@ void motor_setup() {
   X.begin(default_speed, MICROSTEPS);
   Y_1.begin(default_speed, MICROSTEPS);
   Y_2.begin(default_speed, MICROSTEPS);
-  Z.begin(default_speed, MICROSTEPS);
+  Z.begin(default_speed_z, MICROSTEPS);
   T.begin(default_speed, MICROSTEPS);
 
   X.setEnableActiveState(LOW);
@@ -173,7 +174,7 @@ void processCommand() {
     }
   cmd = parseNumber('M',-1);
   switch(cmd) {
-  case  6: wait(parseNumber('S',0))
+  case  6: wait(parseNumber('S',0)); break;
   case 10: enable_Z(); break;
   case 11: disable_Z(); break;
   case 12: enable_T(); break;
@@ -251,8 +252,8 @@ void line(int newx, int newy) {
   py = newy;
 }
 void move_motors(int newx, int newy, int newz, int newt){
-  int dx = convert_mm(newx) - px;
-  int dy = convert_mm(newy) - py;
+  int dx = convert_mm(newx - px);
+  int dy = convert_mm(newy - py);
   int dz = convert_Z_mm(newz -pz);
   int dt = pt - newt;
   controller.rotate(dx, dy, dy, dz, dt);
@@ -272,7 +273,7 @@ int convert_mm(int dist) {
 
 int convert_Z_mm(int dist) {
   // Converts a given distance (in mm) to degrees to rotate motors
-  int degree = dist * 1.7;
+  int degree = dist *51;
   return degree;
 }
 
@@ -309,9 +310,9 @@ void go_home(){
       y_switch = digitalRead(Y_MIN_PIN);
       controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
     }
-    px=40;
-    py=-69;
-    }
+    px=47;
+    py=-75;
+ }
   void cup_origin(){
     x_origin();
     y_origin(); 

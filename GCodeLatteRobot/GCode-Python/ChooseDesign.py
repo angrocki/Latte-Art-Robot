@@ -11,7 +11,7 @@ while(True):
         cmd_id = int(input("Please enter a command ID for Different Patterns(1-2: base, 3-4: heart, 5-6 rosetta): ")) 
         if int(cmd_id) < 0 or int(cmd_id) > 6:
             print ("Values other than 1 and 2 are ignored.")
-        # Base
+        # Base1
         elif int(cmd_id) == 1: 
             base_simple()
         elif int(cmd_id) == 2:  

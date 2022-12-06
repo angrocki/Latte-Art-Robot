@@ -6,7 +6,7 @@ import time
 import math
 #/dev/cu.usbmodem1101 AN
 #COM16 Jacob
-arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
+arduino = Serial(port = 'COM16', baudrate=115200, timeout=0)
 time.sleep(2)
 def go_home():
     while True:
@@ -32,23 +32,25 @@ def move_XYZT(xpos, ypos, zpos, tilt):
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
-
-def move_controller(xpos=None, ypos=None,zpos=None,tilt=None):
+def move_controller(xpos=None,ypos=None,zpos=None,angle=None):
     while True:
-        line = arduino.readline().decode().rstrip()
         message = "G1 "
+        line = arduino.readline().decode().rstrip()
+
         if line == '>':
             if type(xpos) == int:
-                message.append("X{} ")
+                message += f"X{xpos} "
             if type(ypos) == int:
-                message.append("Y{} ")
+                message += f"Y{ypos} "
             if type(zpos) == int:
-                message.append("Z{} ")
-            if type(tilt) == int:
-                message.append("T{}")
-            
-            message.append("\n")
+                message += f"Z{zpos} "
+            if type(angle) == int:
+                message += f"T{angle}"
 
+            message += "\n"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
 
 def move_XYT(xpos, ypos, tilt):
     while True:
@@ -126,7 +128,7 @@ def move_z(z_pos):
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "M1 Z{}".format(z_pos)
+            message = "G1 Z{}".format(z_pos)
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
