@@ -5,7 +5,6 @@
 //------------------------------------------------------------------------------
 #include <Arduino.h>
 #include "MultiDriver.h"
-#include "Adafruit_VL53L0X.h"
 //------------------------------------------------------------------------------
 // CONSTANTS
 //------------------------------------------------------------------------------
@@ -20,6 +19,8 @@ int sofar;  // how much is in the buffer
 char mode_abs=1;  // absolute mode?
 float default_speed = 10;  
 float current_speed = 10;
+float current_speed_T = 10;
+float current_speed_Z = 10;
 float max_speed = 120; 
 float stepmm = 9.375;
 long line_number=0;
@@ -107,9 +108,6 @@ A4988 Z(MOTOR_STEPS, Z_DIR_PIN, Z_STEP_PIN, Z_ENABLE_PIN, MS1, MS2, MS3);
 A4988 T(MOTOR_STEPS, E0_DIR_PIN, E0_STEP_PIN, E0_ENABLE_PIN, MS1, MS2, MS3);
 
 MultiDriver controller(X, Y_1, Y_2, Z, T);
-
-// SENSOR OBJECT
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 //------------------------------------------------------------------------------
 
 
@@ -141,17 +139,6 @@ void motor_setup() {
 void solenoid_setup(){
   pinMode(SOLENOID_PIN, OUTPUT);
   digitalWrite(SOLENOID_PIN, LOW);
-}
-
-void sensor_setup(){
-  while (! Serial) {
-    delay(1);
-  }
-  if (!lox.begin()) {
-    Serial.println(F("Failed to boot VL53L0X"));
-    while(1);
-  }
-  Serial.println(F("VL53L0X API Simple Ranging example\n\n")); 
 }
 
 
@@ -186,14 +173,18 @@ void processCommand() {
     }
   cmd = parseNumber('M',-1);
   switch(cmd) {
+  case  6: wait(parseNumber('S',0))
   case 10: enable_Z(); break;
   case 11: disable_Z(); break;
   case 12: enable_T(); break;
-  case 13: enable_X(); break;
-  case 14: disable_X(); break;
-  case 15: enable_Y(); break;
-  case 16: disable_Y(); break;
+  case 13: disable_T(); break;
+  case 14: enable_X(); break;
+  case 15: disable_X(); break;
+  case 16: enable_Y(); break;
+  case 17: disable_Y(); break;
   case 220: set_speed(parseNumber('S',current_speed)); break;
+  case 221: set_speed_Z(parseNumber('S',current_speed_Z)); break;
+  case 222: set_speed_T(parseNumber('S',current_speed_T)); break;
   case 380: enable_solenoid(); break; 
   case 381: disable_solenoid(); break; 
   case  100:  help(); break;
@@ -260,8 +251,8 @@ void line(int newx, int newy) {
   py = newy;
 }
 void move_motors(int newx, int newy, int newz, int newt){
-  int dx = convert_mm(newx - px);
-  int dy = convert_mm(newy - py);
+  int dx = convert_mm(newx) - px;
+  int dy = convert_mm(newy) - py;
   int dz = convert_Z_mm(newz -pz);
   int dt = pt - newt;
   controller.rotate(dx, dy, dy, dz, dt);
@@ -399,19 +390,34 @@ void set_speed(int s) {
   Y_1.setRPM(s);
   Y_2.setRPM(s);
 }
-
-void read_sensor(){
-  VL53L0X_RangingMeasurementData_t measure;
-    
-  Serial.print("Reading a measurement... ");
-  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
-
-  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
-    Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
-  } else {
-    Serial.println(" out of range ");
+void set_speed_T(int s) {
+  if (s > max_speed) {
+    current_speed_T = max_speed;
   }
-  delay(100);
+  else if (s < 0) {
+    current_speed_T = 0;
+  }
+  else{
+    current_speed_T = s;
+  }
+  T.setRPM(s); 
+}
+
+void set_speed_Z(int s) {
+  if (s > max_speed) {
+    current_speed_Z = max_speed;
+  }
+  else if (s < 0) {
+    current_speed_Z = 0;
+  }
+  else{
+    current_speed_Z = s;
+  }
+  Z.setRPM(s); 
+}
+
+void wait(int s){
+  delay(s);
 }
 /** 
  *  To Do: 
@@ -450,7 +456,6 @@ void help() {
 void setup() {
   motor_setup();
   solenoid_setup();
-  sensor_setup();
   Serial.begin(BAUD);
   help();
   go_home();

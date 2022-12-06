@@ -6,6 +6,7 @@ from GCodeCommands import *
 Pour Straight no squickly 
 """
 def heart_easy(): 
+    set_speed_T(10)
     angle = 40
     tilt(angle)
     #Move distance center function

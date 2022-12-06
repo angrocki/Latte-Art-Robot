@@ -98,6 +98,22 @@ def set_speed(speed):
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+def set_speed_T(speed):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M222 S{}\n".format(speed)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def set_speed_Z(speed):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M221 S{}\n".format(speed)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
 def move_y(y_pos):
     while True:
         line = arduino.readline().decode().rstrip()
