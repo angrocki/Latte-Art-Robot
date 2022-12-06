@@ -7,7 +7,8 @@ import math
 import numpy as np
 #/dev/cu.usbmodem1101 AN
 #COM16 Jacob
-arduino = Serial(port = 'COM16', baudrate=115200, timeout=0)
+#Allyson /dev/ttyACM0
+arduino = Serial(port = '/dev/ttyACM0', baudrate=115200, timeout=0)
 time.sleep(2)
 def go_home():
     while True:
@@ -242,5 +243,5 @@ def make_sine(amplitude, frequency, distance, points):
 
     x = np.linspace(0,distance,points)
     for i in range(0,len(x)):
-        y.append(amplitude*math.sin(frequency*x[i]))
+        y.append(round(amplitude*math.sin(frequency*x[i]),1))
     return x, y
