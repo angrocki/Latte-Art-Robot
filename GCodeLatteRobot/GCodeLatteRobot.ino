@@ -143,6 +143,17 @@ void solenoid_setup(){
   digitalWrite(SOLENOID_PIN, LOW);
 }
 
+void sensor_setup(){
+  while (! Serial) {
+    delay(1);
+  }
+  if (!lox.begin()) {
+    Serial.println(F("Failed to boot VL53L0X"));
+    while(1);
+  }
+  Serial.println(F("VL53L0X API Simple Ranging example\n\n")); 
+}
+
 
 
 /**
@@ -400,7 +411,6 @@ void read_sensor(){
   } else {
     Serial.println(" out of range ");
   }
-    
   delay(100);
 }
 /** 
@@ -440,6 +450,7 @@ void help() {
 void setup() {
   motor_setup();
   solenoid_setup();
+  sensor_setup();
   Serial.begin(BAUD);
   help();
   go_home();
