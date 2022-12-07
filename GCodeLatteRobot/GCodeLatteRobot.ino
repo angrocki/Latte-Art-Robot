@@ -310,8 +310,8 @@ void go_home(){
       y_switch = digitalRead(Y_MIN_PIN);
       controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
     }
-    px=50;
-    py=-55;
+    px=47;
+    py=-75;
  }
   void cup_origin(){
     x_origin();
@@ -437,16 +437,27 @@ void wait(int s){
  * display helpful information
  */
 void help() {
-  Serial.print(F("Gcode LED DEMO "));
+  Serial.print(F("G-Code Latte Commands"));
   Serial.println(F("Commands:"));
-  Serial.println(F("M1; - one rev X"));
-  Serial.println(F("M2; - one rev Y"));
-  Serial.println(F("M3 X[]; - Move X steps "));
-  Serial.println(F("M4 Y[]; - Move Y steps"));
-  Serial.println(F("M5 X[] Y[]; - Set postition"));
-  Serial.println(F("M6; - Print postition"));
+  Serial.println(F("G1 X[] Y[] Z[] T[]; - Move Motors"));
+  Serial.println(F("G27; - Go Home"));
+  Serial.println(F("G28; - Go to Cup Origin"));
+  Serial.println(F("G92 X[] Y[]; - Set Position"));
+  Serial.println(F("M6 S[]; - Delay"));
+  Serial.println(F("M10; - Enable Z Motor"));
+  Serial.println(F("M11; - Disable Z Motor"));
+  Serial.println(F("M12; - Enable T Motor"));
+  Serial.println(F("M13; - Disable T Motor"));
+  Serial.println(F("M14; - Enable X Motor"));
+  Serial.println(F("M15; - Disable X Motor"));
+  Serial.println(F("M16; - Enable  Y Motor"));
+  Serial.println(F("M17; - Disable Y Motor"));
+  Serial.println(F("M220 S[]; - Set XY Motor Speeds"));
+  Serial.println(F("M221 S[]; - Set Z Motor Speeds"));
+  Serial.println(F("M22 S[]; - Set T Motor Speeds"));
+  Serial.println(F("M380; - Enable Solenoid"));
+  Serial.println(F("M381; - Disable Solenoid"));
   Serial.println(F("M100; - this help message"));
-
 }
 
 
