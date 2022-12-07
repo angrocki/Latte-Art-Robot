@@ -4,9 +4,11 @@ List of G-Code Commands. Communicates with Adrino G-Code
 from serial import Serial
 import time
 import math
+import numpy as np
 #/dev/cu.usbmodem1101 AN
 #COM16 Jacob
-arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
+#Allyson /dev/ttyACM0
+arduino = Serial(port = '/dev/ttyACM0', baudrate=115200, timeout=0)
 time.sleep(2)
 def go_home():
     while True:
@@ -32,23 +34,25 @@ def move_XYZT(xpos, ypos, zpos, tilt):
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
-
-def move_controller(xpos=None, ypos=None,zpos=None,tilt=None):
+def move_controller(xpos=None,ypos=None,zpos=None,angle=None):
     while True:
-        line = arduino.readline().decode().rstrip()
         message = "G1 "
+        line = arduino.readline().decode().rstrip()
+
         if line == '>':
             if type(xpos) == int:
-                message.append("X{} ")
+                message += f"X{xpos} "
             if type(ypos) == int:
-                message.append("Y{} ")
+                message += f"Y{ypos} "
             if type(zpos) == int:
-                message.append("Z{} ")
-            if type(tilt) == int:
-                message.append("T{}")
-            
-            message.append("\n")
+                message += f"Z{zpos} "
+            if type(angle) == int:
+                message += f"T{angle}"
 
+            message += "\n"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
 
 def move_XYT(xpos, ypos, tilt):
     while True:
@@ -98,6 +102,22 @@ def set_speed(speed):
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+def set_speed_T(speed):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M222 S{}\n".format(speed)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def set_speed_Z(speed):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M221 S{}\n".format(speed)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
 def move_y(y_pos):
     while True:
         line = arduino.readline().decode().rstrip()
@@ -110,7 +130,7 @@ def move_z(z_pos):
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
-            message = "M1 Z{}".format(z_pos)
+            message = "G1 Z{}".format(z_pos)
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
@@ -162,6 +182,48 @@ def disable_T():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
+def enable_X():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M14"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def disable_X():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M15"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+
+def enable_Y():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M16"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def disable_Y():
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M17"
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
+def delay(ms):
+    while True:
+        line = arduino.readline().decode().rstrip()
+        if line == '>':
+            message = "M6 S{}".format(ms)
+            print(message)
+            arduino.write(str.encode(message+"\n"))
+            break
 def make_circle(radius, points): 
     # origin is 0
     x = []
@@ -173,4 +235,13 @@ def make_circle(radius, points):
         x.append(round(math.cos(step) * radius, 2)) 
         y.append(round(math.sin(step) * radius, 2))
         step = step + step_size 
+    return x, y
+
+def make_sine(amplitude, frequency, distance, points):
+    x = []
+    y = []
+
+    x = np.linspace(0,distance,points)
+    for i in range(0,len(x)):
+        y.append(round(amplitude*math.sin(frequency*x[i]),1))
     return x, y

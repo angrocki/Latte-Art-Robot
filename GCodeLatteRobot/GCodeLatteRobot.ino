@@ -17,8 +17,11 @@
 char buffer[MAX_BUF];  // where we store the message until we get a ';'
 int sofar;  // how much is in the buffer
 char mode_abs=1;  // absolute mode?
-float default_speed = 10;  
+float default_speed = 10; 
+float default_speed_z = 30;  
 float current_speed = 10;
+float current_speed_T = 10;
+float current_speed_Z = 10;
 float max_speed = 120; 
 float stepmm = 9.375;
 long line_number=0;
@@ -113,7 +116,7 @@ void motor_setup() {
   X.begin(default_speed, MICROSTEPS);
   Y_1.begin(default_speed, MICROSTEPS);
   Y_2.begin(default_speed, MICROSTEPS);
-  Z.begin(default_speed, MICROSTEPS);
+  Z.begin(default_speed_z, MICROSTEPS);
   T.begin(default_speed, MICROSTEPS);
 
   X.setEnableActiveState(LOW);
@@ -171,14 +174,18 @@ void processCommand() {
     }
   cmd = parseNumber('M',-1);
   switch(cmd) {
+  case  6: wait(parseNumber('S',0)); break;
   case 10: enable_Z(); break;
   case 11: disable_Z(); break;
   case 12: enable_T(); break;
-  case 13: enable_X(); break;
-  case 14: disable_X(); break;
-  case 15: enable_Y(); break;
-  case 16: disable_Y(); break;
+  case 13: disable_T(); break;
+  case 14: enable_X(); break;
+  case 15: disable_X(); break;
+  case 16: enable_Y(); break;
+  case 17: disable_Y(); break;
   case 220: set_speed(parseNumber('S',current_speed)); break;
+  case 221: set_speed_Z(parseNumber('S',current_speed_Z)); break;
+  case 222: set_speed_T(parseNumber('S',current_speed_T)); break;
   case 380: enable_solenoid(); break; 
   case 381: disable_solenoid(); break; 
   case  100:  help(); break;
@@ -266,7 +273,7 @@ int convert_mm(int dist) {
 
 int convert_Z_mm(int dist) {
   // Converts a given distance (in mm) to degrees to rotate motors
-  int degree = dist * 1.7;
+  int degree = dist *51;
   return degree;
 }
 
@@ -303,9 +310,9 @@ void go_home(){
       y_switch = digitalRead(Y_MIN_PIN);
       controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
     }
-    px=40;
-    py=-69;
-    }
+    px=47;
+    py=-75;
+ }
   void cup_origin(){
     x_origin();
     y_origin(); 
@@ -383,6 +390,35 @@ void set_speed(int s) {
   X.setRPM(s);
   Y_1.setRPM(s);
   Y_2.setRPM(s);
+}
+void set_speed_T(int s) {
+  if (s > max_speed) {
+    current_speed_T = max_speed;
+  }
+  else if (s < 0) {
+    current_speed_T = 0;
+  }
+  else{
+    current_speed_T = s;
+  }
+  T.setRPM(s); 
+}
+
+void set_speed_Z(int s) {
+  if (s > max_speed) {
+    current_speed_Z = max_speed;
+  }
+  else if (s < 0) {
+    current_speed_Z = 0;
+  }
+  else{
+    current_speed_Z = s;
+  }
+  Z.setRPM(s); 
+}
+
+void wait(int s){
+  delay(s);
 }
 /** 
  *  To Do: 

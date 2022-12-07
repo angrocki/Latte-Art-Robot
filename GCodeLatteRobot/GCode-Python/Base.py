@@ -8,6 +8,9 @@ Base_Simple
 No Tilt, no changing Height, only circles until a certain time/circles/height
 """
 def base_simple(): 
+    enable_X()
+    enable_Y()
+    enable_Z()
     go_home()
     disable_Z()
     go_cup_origin()
@@ -15,9 +18,9 @@ def base_simple():
     radius = diameter/2
     points = 50
     x, y = make_circle(radius, points)
-    circles = 3
+    circles = 2
     move_XY(x[0],y[0])
-    set_speed(10)
+    set_speed(70)
     enable_solenoid()
     for i in range(circles):
         for i in range(len(x)):
