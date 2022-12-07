@@ -13,7 +13,6 @@ def heart_easy():
     enable_Z()
     set_speed_Z(80)
     move_z(65)
-    move_y(10)
     set_speed_T(10)
     angle = -40
     tilt(angle)

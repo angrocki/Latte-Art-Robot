@@ -4,7 +4,7 @@ Functions are imported from different files.
 '''
 from Heart import heart_easy, heart_hard
 from Base import base_simple,  base_complicated
-from Rosetta import rosetta_easy, rosetta_hard,test
+# from Rosetta import rosetta_easy, rosetta_hard,test
 
 while(True):
     try:
