@@ -1,5 +1,5 @@
 import pygame as pg
-from ext_ui_test import *
+#from ext_ui_test import *
 pg.init()
 
 #----------------------------------------------------------------------------------
@@ -25,6 +25,7 @@ clock = pg.time.Clock()                             # set in frames per sec
 #----------------------------------------------------------------------------------
 ## SPRITE CLASSES (Temp location)
 #----------------------------------------------------------------------------------
+
 class Button(pg.sprite.Sprite):
     """
     Button sprite with functionality for choosing designs etc.
@@ -144,11 +145,13 @@ class NavigationButton(Button):
 
         # Loads button display, depending on type of navigation button
         if self._type == "Start":
-            self._surface = pg.image.load("button_temp.png").convert_alpha()
+            self._surface = pg.image.load("UI_Images/buttons/start_button.png").convert_alpha()
         elif self._type == "Home":
-            self._surface = pg.image.load("").convert_alpha()
+            self._surface = pg.image.load("UI_Images/buttons/home_button.png").convert_alpha()
+        elif self._type == "Next":
+            self._surface = pg.image.load("UI_Images/buttons/next_button.png").convert_alpha()
         elif self._type == "Begin Drawing":
-            self._surface = pg.image.load("").convert_alpha()
+            self._surface = pg.image.load("UI_Images/buttons/start_button.png").convert_alpha()
         elif self._type == "Back":
             self._surface = pg.image.load("button_temp.png").convert_alpha()
 
@@ -164,6 +167,8 @@ class NavigationButton(Button):
         if self._type == "Home":
             self.set_position(900,30)
             self.scale(95,95)
+        if self._type == "Next":
+            self.set_position(540,400)
         if self._type == "Begin Drawing":
             self.set_position(900,30)
             self.scale(95,95)
@@ -173,13 +178,19 @@ class NavigationButton(Button):
 
 
 # temp images 
-startbut = NavigationButton("Start")
-startbut.setup()
+start_button = NavigationButton("Start")
+start_button.setup()
+
+home_button = NavigationButton("Home")
+home_button.setup()
+
+begin_drawing_button = NavigationButton("Begin Drawing")
+begin_drawing_button.setup()
+
+back_button = NavigationButton("Back")
+back_button.setup()
 # startbut.display(screen)
-backbut = NavigationButton("Back")   
-backbut.setup() 
-homebut = NavigationButton("home")
-homebut.setup()  
+
 
 class Menu():
     def __init__(self):
@@ -204,11 +215,11 @@ class Menu():
                 pg.quit()
                 pg.sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
-                if startbut.rect.collidepoint(pg.mouse.get_pos()):
+                if start_button.rect.collidepoint(pg.mouse.get_pos()):
                     self.state = 'choose' 
         
         pg.display.update()
-        startbut.display(screen)
+        start_button.display(screen)
 
     def choose(self):
         for event in pg.event.get():
@@ -216,17 +227,30 @@ class Menu():
                 pg.quit()
                 pg.sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
-                if startbut.rect.collidepoint(pg.mouse.get_pos()):
+                if start_button.rect.collidepoint(pg.mouse.get_pos()):
                     self.state = 'choose' 
+        pass
         
         pg.display.update()
-        startbut.display(screen)
+        start_button.display(screen)
 
-    def waiting():
-        pass
+    def waiting(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if start_button.rect.collidepoint(pg.mouse.get_pos()):
+                    self.state = 'waiting' 
 
-    def done():
-        pass
+    def done(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if start_button.rect.collidepoint(pg.mouse.get_pos()):
+                    self.state = 'done' 
 
 menu = Menu()
 
