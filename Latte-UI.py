@@ -149,8 +149,8 @@ class NavigationButton(Button):
             self._surface = pg.image.load("").convert_alpha()
         elif self._type == "Begin Drawing":
             self._surface = pg.image.load("").convert_alpha()
-        elif self._type == "Next Drink":
-            self._surface = pg.image.load("").convert_alpha()
+        elif self._type == "Back":
+            self._surface = pg.image.load("button_temp.png").convert_alpha()
 
     def setup(self):
         '''
@@ -167,55 +167,90 @@ class NavigationButton(Button):
         if self._type == "Begin Drawing":
             self.set_position(900,30)
             self.scale(95,95)
-        if self._type == "Next Drink":
+        if self._type == "Back":
             self.set_position(900,30)
             self.scale(95,95)
-        
 
-def home():
-    '''
-    A function that when called, establishes the "home" screen.
-    '''
-    startbut.display(screen)
-
-def choose():
-    '''
-    A function that when called, establishes the "choose design" screen.
-    '''
-    pass
-
-def waiting():
-    '''
-    A function that when called, establishes the "waiting" screen.
-    '''
-    pass
 
 # temp images 
 startbut = NavigationButton("Start")
 startbut.setup()
 # startbut.display(screen)
+backbut = NavigationButton("Back")   
+backbut.setup() 
+homebut = NavigationButton("home")
+homebut.setup()  
+
+class Menu():
+    def __init__(self):
+        self.state = 'home'
+
+    def state_manager(self):
+        if self.state == 'home':
+            self.home()
+        elif self.state == 'choose':
+            self.choose()
+        elif self.state == 'waiting':
+            self.waiting()
+        elif self.state == 'done':
+            self.done()
+    
+    def home(self):
+        '''
+        Home Page
+        '''
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if startbut.rect.collidepoint(pg.mouse.get_pos()):
+                    self.state = 'choose' 
+        
+        pg.display.update()
+        startbut.display(screen)
+
+    def choose(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if startbut.rect.collidepoint(pg.mouse.get_pos()):
+                    self.state = 'choose' 
+        
+        pg.display.update()
+        startbut.display(screen)
+
+    def waiting():
+        pass
+
+    def done():
+        pass
+
+menu = Menu()
 
 #----------------------------------------------------------------------------------
 ## UI LOOP
 #----------------------------------------------------------------------------------
 running = True
 while running:
-    for event in pg.event.get():
-        if event.type == pg.QUIT:
-            running = False
-        if event.type == pg.MOUSEBUTTONDOWN:
-            if startbut.rect.collidepoint(pg.mouse.get_pos()):
-                startbut.clicked = False
-                print(startbut.clicked)
-                testmeui()
+    menu.state_manager()
+#     for event in pg.event.get():
+#         if event.type == pg.QUIT:
+#             running = False
+#         if event.type == pg.MOUSEBUTTONDOWN:
+#             if startbut.rect.collidepoint(pg.mouse.get_pos()):
+#                 startbut.clicked = False
+#                 print(startbut.clicked)
+#                 testmeui()
             
 
-    pg.display.flip()
-    print(startbut.clicked)
-    # startbut.display(screen)
-    if startbut.clicked is True:
-        startbut.display(screen)
-        print("if")
+#     pg.display.flip()
+#     print(startbut.clicked)
+#     # startbut.display(screen)
+#     if startbut.clicked is True:
+#         startbut.display(screen)
+#         print("if")
     
 
-    # home()
