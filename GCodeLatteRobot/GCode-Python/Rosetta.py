@@ -12,8 +12,16 @@ def rosetta_easy():
     x_count = 0
 
     base_simple()   #make base
-    move_controller(None,None,None,None,angle)  #tilt cup
-    move_controller(None,None,31)               #move z up
+    enable_T()
+    enable_X()
+    enable_Y()
+    go_cup_origin()
+    enable_Z()
+    set_speed_Z(80)
+    move_z(65)
+    set_speed_T(10)
+    angle = -40
+    tilt(angle)
     enable_solenoid()                           #open valve
     while angle > 5:
         angle-=1
@@ -31,7 +39,6 @@ def rosetta_easy():
 
 def test():
     x,y = make_sine(10,5,90,200)
-    print(x,y)
     for i in range(len(x)):
         # move_XY(x[i],y[i])
         move_controller(x[i], y[i])
@@ -39,5 +46,3 @@ def test():
 
 def rosetta_hard():
     print("Rosetta Hard")
-
-test()

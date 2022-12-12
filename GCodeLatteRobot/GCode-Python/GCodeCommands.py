@@ -8,7 +8,7 @@ import numpy as np
 #/dev/cu.usbmodem1101 AN
 #COM16 Jacob
 #Allyson /dev/ttyACM0
-arduino = Serial(port = 'COM16', baudrate=115200, timeout=0)
+arduino = Serial(port = '/dev/ttyACM0', baudrate=115200, timeout=0)
 time.sleep(2)
 
 def go_home():
