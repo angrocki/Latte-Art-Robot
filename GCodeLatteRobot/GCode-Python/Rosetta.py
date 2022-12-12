@@ -40,7 +40,8 @@ def rosetta_easy():
 def test():
     x,y = make_sine(10,5,90,200)
     for i in range(len(x)):
-        move_XY(x[i],y[i])
+        # move_XY(x[i],y[i])
+        move_controller(x[i], y[i])
 
 
 def rosetta_hard():

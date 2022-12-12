@@ -12,15 +12,17 @@ def heart_easy():
     go_cup_origin()
     enable_Z()
     set_speed_Z(80)
-    move_z(65)
+    move_controller(None,None,65,None)
     set_speed_T(10)
     angle = -40
-    tilt(angle)
+    # tilt(angle)
+    move_controller(None,None,None,angle)
     #Move distance center function
     #Move to above the cup
     enable_solenoid()
     set_speed_T(1)
-    tilt(0)
+    # tilt(0)
+    move_controller(None,None,None,0)
     set_speed_Z(250)
     set_speed(70)
     move_controller(30, None, 40, None)
@@ -33,6 +35,7 @@ def heart_easy():
     disable_X()
     disable_Y()
     disable_Z()
+    return "done"
     
     
 
