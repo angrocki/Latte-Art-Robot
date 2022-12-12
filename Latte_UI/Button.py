@@ -37,17 +37,6 @@ class Button(pg.sprite.Sprite):
 
         self.rect = self._surface.get_rect(topleft=(self._x,self._y))
 
-    # def set_rect(self, cen_x, cen_y):
-    #     '''
-    #     Sets the rectangular hitbox of the button.
-
-    #     Args:
-    #         cen_x: 
-    #             An integer representing the center x coordinate of the button.
-    #         cen_y: 
-    #             An integer representing the center y coordinate of the button.
-    #     '''
-    #     self.rect = self._surface.get_rect(topleft=(cen_x,cen_y))
 
     def scale(self,x_scale,y_scale):
         '''
@@ -60,13 +49,6 @@ class Button(pg.sprite.Sprite):
                 An integer representing the y amount to scale your image by.
         '''
         self._surface = pg.transform.smoothscale(self._surface, (x_scale, y_scale))
-
-    def scale_gen(self, scale):
-
-        width =  self._surface.get_width()
-        height = self._surface.get_height()
-
-        self._surface = pg.transform.scale(self._surface, (int((width*scale)), int(height*scale)))
 
     def display(self, screen):
         '''
@@ -87,6 +69,7 @@ class Button(pg.sprite.Sprite):
             if pg.mouse.get_pressed()[0] == 0:
                 self.clicked = False
         return action
+
 class DesignButton(Button):
     '''
     A subclass of the Button class that initializes the Latte design buttons 
@@ -121,13 +104,6 @@ class DesignButton(Button):
             self._surface = pg.image.load("UI_Images/buttons/check.png").convert_alpha()
         elif self._type == "Cup Check":
             self._surface = pg.image.load("UI_Images/buttons/check.png").convert_alpha()
-        
-        # elif self._type == "Checkbox":
-        #     self._surface = pg.image.load("UI_Images/buttons/checkbox.png").convert_alpha()
-        # elif self._type == "Check":
-        #     self._surface = pg.image.load("UI_Images/buttons/check.png").convert_alpha()
-        
-        # Loads selection circles
         
 
     def setup(self):
@@ -167,6 +143,7 @@ class DesignButton(Button):
         if self._type == "Cup Check":
             self.set_position(890,1070)
             self.scale(700,400)
+            
 class NavigationButton(Button):
     '''
     A subclass of the Button class that initializes the navigation
