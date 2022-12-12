@@ -10,7 +10,12 @@ import numpy as np
 #Allyson /dev/ttyACM0
 arduino = Serial(port = 'COM16', baudrate=115200, timeout=0)
 time.sleep(2)
+
 def go_home():
+    '''
+    A function that gives the robot the G-Code command to "zero" itself by
+    moving all the motors to hit the limit switches.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -18,7 +23,12 @@ def go_home():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def go_cup_origin():
+    '''
+    A function that gives the robot the G-Code command to move to the center
+    of the coffee cup.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -26,15 +36,18 @@ def go_cup_origin():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
-def move_XYZT(xpos, ypos, zpos, tilt):
-    while True:
-        line = arduino.readline().decode().rstrip()
-        if line == '>':
-            message = "G1 X{} Y{} Z{} T{}\n".format(xpos,ypos,zpos,tilt)
-            print(message)
-            arduino.write(str.encode(message+"\n"))
-            break
+
 def move_controller(xpos=None,ypos=None,zpos=None,angle=None):
+    '''
+    A function that gives the robot a G-Code command to move to a given position
+    on the global axis. Each parameter is default set to None.
+
+    Args:
+    xpos: An integer representing the x-coordinate the robot should move to.
+    ypos: An integer representing the y-coordinate the robot should move to.
+    zpos: An integer representing the z-coordinate the robot should move to.
+    tilt: An integer representing the tilt angle the robot should move to.
+    '''
     while True:
         message = "G1 "
         line = arduino.readline().decode().rstrip()
@@ -54,47 +67,14 @@ def move_controller(xpos=None,ypos=None,zpos=None,angle=None):
             arduino.write(str.encode(message+"\n"))
             break
 
-def move_XYT(xpos, ypos, tilt):
-    while True:
-        line = arduino.readline().decode().rstrip()
-        if line == '>':
-            message = "G1 X{} Y{} T{}\n".format(xpos,ypos,tilt)
-            print(message)
-            arduino.write(str.encode(message+"\n"))
-            break
-def move_XY(xpos, ypos):
-    while True:
-        line = arduino.readline().decode().rstrip()
-        if line == '>':
-            message = "G1 X{} Y{}\n".format(xpos,ypos)
-            print(message)
-            arduino.write(str.encode(message+"\n"))
-            break
-def tilt(angle):
-    while True:
-        line = arduino.readline().decode().rstrip()
-        if line == '>':
-            message = "G1 T{}\n".format(angle)
-            print(message)
-            arduino.write(str.encode(message+"\n"))
-            break 
-def move_x(xpos):
-    while True:
-        line = arduino.readline().decode().rstrip()
-        if line == '>':
-            message = "G1 X{}\n".format(xpos)
-            print(message)
-            arduino.write(str.encode(message+"\n"))
-            break
-def set_pos(xpos, ypos):
-    while True:
-        line = arduino.readline().decode().rstrip()
-        if line == '>':
-            message = "G92 X{} Y{}\n".format(xpos, ypos)
-            print(message)
-            arduino.write(str.encode(message+"\n"))
-            break
 def set_speed(speed):
+    '''
+    A function that gives the robot a G-Code command to change the speed of the
+    x and y axis motors.
+
+    Args:
+        speed: An integer representing the desired speed of the motors in RPM.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -103,6 +83,13 @@ def set_speed(speed):
             arduino.write(str.encode(message+"\n"))
             break
 def set_speed_T(speed):
+    '''
+    A function that gives the robot a G-Code command to change the speed of the
+    tilt motor.
+
+    Args:
+        speed: An integer representing the desired speed of the motors in RPM.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -110,7 +97,15 @@ def set_speed_T(speed):
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def set_speed_Z(speed):
+    '''
+    A function that gives the robot a G-Code command to change the speed of the
+    z-axis motor.
+
+    Args:
+        speed: An integer representing the desired speed of the motors in RPM.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -118,23 +113,12 @@ def set_speed_Z(speed):
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
-def move_y(y_pos):
-    while True:
-        line = arduino.readline().decode().rstrip()
-        if line == '>':
-            message = "M1 Y{}".format(y_pos)
-            print(message)
-            arduino.write(str.encode(message+"\n"))
-            break
-def move_z(z_pos):
-    while True:
-        line = arduino.readline().decode().rstrip()
-        if line == '>':
-            message = "G1 Z{}".format(z_pos)
-            print(message)
-            arduino.write(str.encode(message+"\n"))
-            break
+
 def enable_solenoid():
+    '''
+    A function that gives the robot a G-Code command to enable the solenoid valve
+    (in other words, to open the valve).
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -143,6 +127,10 @@ def enable_solenoid():
             arduino.write(str.encode(message+"\n"))
             break
 def disable_solenoid():
+    '''
+    A function that gives the robot a G-Code command to disable the solenoid valve
+    (in other words, to close the valve).
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -150,7 +138,11 @@ def disable_solenoid():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def disable_Z():
+    '''
+    A function that gives the robot a G-Code command to disable the z-axis motor.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -158,7 +150,11 @@ def disable_Z():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def enable_Z():
+    '''
+    A function that gives the robot a G-Code command to enable the z-axis motor.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -166,7 +162,11 @@ def enable_Z():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def enable_T():
+    '''
+    A function that gives the robot a G-Code command to enable the tilt motor.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -174,7 +174,11 @@ def enable_T():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def disable_T():
+    '''
+    A function that gives the robot a G-Code command to disable the tilt motor.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -184,6 +188,9 @@ def disable_T():
             break
 
 def enable_X():
+    '''
+    A function that gives the robot a G-Code command to enable the x-axis motor.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -191,7 +198,11 @@ def enable_X():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def disable_X():
+    '''
+    A function that gives the robot a G-Code command to disable the x-axis motor.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -201,6 +212,9 @@ def disable_X():
             break
 
 def enable_Y():
+    '''
+    A function that gives the robot a G-Code command to enable the y-axis motor.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -208,7 +222,11 @@ def enable_Y():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def disable_Y():
+    '''
+    A function that gives the robot a G-Code command to disable the y-axis motor.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -216,7 +234,15 @@ def disable_Y():
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def delay(ms):
+    '''
+    A function that gives the robot a G-Code command to pause its movements by a
+    given amount.
+
+    Args:
+        ms: An integer representing the desired delay time in milliseconds.
+    '''
     while True:
         line = arduino.readline().decode().rstrip()
         if line == '>':
@@ -224,7 +250,26 @@ def delay(ms):
             print(message)
             arduino.write(str.encode(message+"\n"))
             break
+
 def make_circle(radius, points): 
+    '''
+    A function that calculates and returns the x and y coordinates necessary in
+    order to create a circle of a given radius, and of a certain amount of points.
+    The x and y coordinates are calculated using the Pythagorean Identity:
+    cos^2 + sin^2 = 1.
+
+    Args:
+        radius: An integer representing the desired radius of the circle in mm.
+        points: An integer representing the desired amount of coordinates.
+
+    Returns:
+        x: 
+            An array containing rounded integers representing the global x
+            coordinates for creating a circle.
+        y: 
+            An array containing rounded integers representing the global y
+            coordinates for creating a circle.
+    '''
     # origin is 0
     x = []
     y = []
@@ -238,6 +283,27 @@ def make_circle(radius, points):
     return x, y
 
 def make_sine(amplitude, frequency, distance, points):
+    '''
+    A function that calculates and returns the x and y coordinates necessary in
+    order to create a sin wave of a given amplitude, frequency, x-distance, and
+    amount of points. The x & y coordinates are calculated using the sin function:
+    y = A*sin(B*x) where A is the amplitude and B is the frequency.
+
+    Args:
+        amplitude: An integer representing the desired amplitude of the wave in mm.
+        frequency: An integer representing the desired frequency of the wave in mm.
+        distance: An integer representing the desired distance travelled in the x
+                  direction in mm.
+        points: An integer representing the desired amount of coordinates.
+
+    Returns:
+        x: 
+            An array containing rounded integers representing the global x
+            coordinates for creating a sin wave.
+        y: 
+            An array containing rounded integers representing the global y
+            coordinates for creating a sin wave.
+    '''
     x = []
     y = []
 
@@ -245,3 +311,5 @@ def make_sine(amplitude, frequency, distance, points):
     for i in range(0,len(x)):
         y.append(round(amplitude*math.sin(frequency*x[i]),1))
     return x, y
+
+

@@ -19,15 +19,19 @@ def base_simple():
     points = 50
     x, y = make_circle(radius, points)
     circles = 2
-    move_XY(x[0],y[0])
+    # move_XY(x[0],y[0])
+    move_controller(x[0],y[0])
     set_speed(70)
     enable_solenoid()
     for i in range(circles):
         for i in range(len(x)):
-            move_XY(x[i],y[i])
+            # move_XY(x[i],y[i])
+            move_controller(x[i,y[i]])
     disable_solenoid()
     set_speed(10)
-    move_XY(0,0)
+    # move_XY(0,0)
+    move_controller(0,0)
+    say_done()
 """
 Base_tilt
 No Tilt, no changing Height, only circles until a certain time/circles/height
@@ -40,16 +44,21 @@ def base_tilt():
     points = 2000
     x, y = make_circle(radius, points)
     circles = 3
-    move_XY(x[0],y[0])
+    # move_XY(x[0],y[0])
+    move_controller(x[0], y[0])
     set_speed(75)
     #enable_solenoid()
     for i in range(circles):
         for i in range(len(x)):
-            move_XY(x[i],y[i])
-        move_XY(x[0],y[0])
+            # move_XY(x[i],y[i])
+            move_controller(x[i],y[i])
+        # move_XY(x[0],y[0])
+        move_controller(x[0],y[0])
     #disable_solenoid()
     set_speed(10)
-    move_XY(0,0)
+    # move_XY(0,0)
+    move_controller(0,0)
+    say_done()
 
 def base_complicated():
     print("Complicated Base")
