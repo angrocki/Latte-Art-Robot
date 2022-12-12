@@ -133,12 +133,16 @@ class DesignButton(Button):
             self._surface = pg.image.load("UI_Images/buttons/rosetta.png").convert_alpha() ##*****make folder for button images****
         elif self._type == "Random":
             self._surface = pg.image.load("UI_Images/buttons/random.png").convert_alpha()
-        elif self._type == "Selection_Circle":
+        if self._type == "Heart Border":
             self._surface = pg.image.load("UI_Images/buttons/Selection_Circle.png").convert_alpha()
-        elif self._type == "Checkbox":
-            self._surface = pg.image.load("UI_Images/buttons/checkbox.png").convert_alpha()
-        elif self._type == "Check":
-            self._surface = pg.image.load("UI_Images/buttons/check.png").convert_alpha()
+        elif self._type == "Rosetta Border":
+            self._surface = pg.image.load("UI_Images/buttons/Selection_Circle.png").convert_alpha()
+        elif self._type == "Random Border":
+            self._surface = pg.image.load("UI_Images/buttons/Selection_Circle.png").convert_alpha()
+        # elif self._type == "Checkbox":
+        #     self._surface = pg.image.load("UI_Images/buttons/checkbox.png").convert_alpha()
+        # elif self._type == "Check":
+        #     self._surface = pg.image.load("UI_Images/buttons/check.png").convert_alpha()
         
         # Loads selection circles
         
@@ -157,6 +161,15 @@ class DesignButton(Button):
         if self._type == "Random":
             self.set_position(1290,500)
             self.scale(525,385)
+        if self._type == "Heart Border":
+            self.set_position(525,590)
+            self.scale(1400,900)
+        if self._type == "Rosetta Border":
+            self.set_position(920, 590)
+            self.scale(1400,900)
+        if self._type == "Random Border":
+            self.set_position(1325, 590)
+            self.scale(1400,900)
 
 class NavigationButton(Button):
     '''
@@ -194,30 +207,49 @@ class NavigationButton(Button):
         if self._type == "Next":
             self.set_position(1100,625)
         if self._type == "Begin Drawing":
-            self.set_position(640,625)
+            self.set_position(1100,625)
         if self._type == "Back":
             self.set_position(640,625)
 
-class SelectButton(Button):
+class ChecklistButton(Button):
     def __init__(self,type):
         super().__init__(type)
-
-        if self._type == "Heart Border":
-            self._surface = pg.image.load("UI_Images/buttons/Selection_Circle.png").convert_alpha()
-        elif self._type == "Rosetta Border":
-            self._surface = pg.image.load("UI_Images/buttons/Selection_Circle.png").convert_alpha()
-        elif self._type == "Random Border":
-            self._surface = pg.image.load("UI_Images/buttons/Selection_Circle.png").convert_alpha()
+        if self._type == "Milk Checkbox":
+            self._surface = pg.image.load("UI_Images/buttons/checkbox.png").convert_alpha()
+        elif self._type == "Coffee Checkbox":
+            self._surface = pg.image.load("UI_Images/buttons/checkbox.png").convert_alpha()
+        elif self._type == "Cup Checkbox":
+            self._surface = pg.image.load("UI_Images/buttons/checkbox.png").convert_alpha()
+        elif self._type == "Milk Check":
+            self._surface = pg.image.load("UI_Images/buttons/check.png").convert_alpha()
+        elif self._type == "Coffee Check":
+            self._surface = pg.image.load("UI_Images/buttons/check.png").convert_alpha()
+        elif self._type == "Cup Check":
+            self._surface = pg.image.load("UI_Images/buttons/check.png").convert_alpha()
+        
     def setup(self):
-        if self._type == "Heart Border":
-            self.set_position(525,590)
-            self.scale(1400,900)
-        if self._type == "Rosetta Border":
-            self.set_position(925, 590)
-            self.scale(1400,900)
-        if self._type == "Random Border":
-            self.set_position(1325, 590)
-            self.scale(1400,900)
+        if self._type == "Milk Checkbox":
+            self.scale(800,500)
+            self.set_position(500,325)
+        if self._type == "Coffee Checkbox":
+            self.scale(800,500)
+            self.set_position(500,450)      
+        if self._type == "Cup Checkbox":
+            self.scale(800,500)
+            self.set_position(500,575)
+            
+        if self._type == "Milk Check":
+            self.set_position(830,705)
+            self.scale(900,700)
+        if self._type == "Coffee Check":
+            self.set_position(830,830)
+            self.scale(900,700)
+        if self._type == "Cup Check":
+            self.set_position(830,955)
+            self.scale(900,700)
+
+      
+
 
 # naviation images 
 start_button = NavigationButton("Start")
@@ -245,12 +277,26 @@ rosetta.setup()
 random = DesignButton("Random")
 random.setup()
 
-heart_border = SelectButton("Heart Border")
+heart_border = DesignButton("Heart Border")
 heart_border.setup()
-rosetta_border = SelectButton("Rosetta Border")
+rosetta_border = DesignButton("Rosetta Border")
 rosetta_border.setup()
-random_border = SelectButton("Random Border")
+random_border = DesignButton("Random Border")
 random_border.setup()
+
+# checklist images
+milk_box = ChecklistButton("Milk Checkbox")
+milk_box.setup()
+coffee_box = ChecklistButton("Coffee Checkbox")
+coffee_box.setup()
+cup_box = ChecklistButton("Cup Checkbox")
+cup_box.setup()
+milk_check = ChecklistButton("Milk Check")
+milk_check.setup()
+coffee_check = ChecklistButton("Coffee Check")
+coffee_check.setup()
+cup_check = ChecklistButton("Cup Check")
+cup_check.setup()
 
 class Background():
     def __init__(self, type):
@@ -272,6 +318,8 @@ class Background():
         elif self._type == "Done":
             self._surface = pg.image.load("UI_Images/background/done.png").convert_alpha()
             self._surface = pg.transform.scale(self._surface, size)
+    def draw(self,surface):
+        surface.blit(self._surface, (0,0))
 
 
 
@@ -292,7 +340,6 @@ class Menu():
             self.home()
         elif self.state == 'choose':
             self.choose()
-            print("switching")
         elif self.state == 'choose_heart':
             self.choose_heart()
         elif self.state == 'choose_rosetta':
@@ -301,6 +348,18 @@ class Menu():
             self.choose_random()
         elif self.state == 'checklist':
             self.checklist()
+        elif self.state == 'checklist_milk':
+            self.checklist_milk()
+        elif self.state == 'checklist_milk_coffee':
+            self.checklist_milk_coffee()
+        elif self.state == 'checklist_milk_coffee_cup':
+            self.checklist_milk_coffee_cup()
+        elif self.state == 'checklist_coffee':
+            self.checklist_coffee()
+        elif self.state == 'checklist_coffee_cup':
+            self.checklist_coffee_cup()
+        elif self.state == 'checklist_cup':
+            self.checklist_cup()
         elif self.state == 'waiting':
             self.waiting()
         elif self.state == 'done':
@@ -317,7 +376,6 @@ class Menu():
             if event.type == pg.MOUSEBUTTONDOWN:
                 if start_button.rect.collidepoint(pg.mouse.get_pos()):
                     self.state = 'choose' 
-                    print("CLICKED")
         pg.display.update()
         home_screen.draw(screen)
         start_button.display(screen)
@@ -348,7 +406,6 @@ class Menu():
         heart.display(screen)
         rosetta.display(screen)
         random.display(screen)
-        print("im here")
 
     def choose_heart(self):
         '''
@@ -428,13 +485,132 @@ class Menu():
             if event.type == pg.QUIT:
                 pg.quit()
                 pg.sys.exit()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                if begin_drawing_button.rect.collidepoint(pg.mouse.get_pos()):
-                    self.state = 'waiting'
+            if milk_box.draw():
+                self.state = 'checklist_milk'
+            if coffee_box.draw():
+                self.state = 'checklist_coffee'
+            if cup_box.draw():
+                self.state = 'checklist_cup'
+        pg.display.update()
+        checklist_screen.draw(screen)
+        milk_box.display(screen)
+        coffee_box.display(screen)
+        cup_box.display(screen)
+    
+    def checklist_milk(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if milk_box.draw():
+                self.state = 'checklist'
+            if coffee_box.draw():
+                self.state = 'checklist_milk_coffee'
+            if cup_box.draw():
+                self.state = 'checklist_milk_cup'  
+        pg.display.update()
+        checklist_screen.draw(screen)
+        milk_box.display(screen)
+        coffee_box.display(screen)
+        cup_box.display(screen)
+        milk_check.display(screen)
+
+    def checklist_coffee(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if milk_box.draw():
+                self.state = 'checklist_milk_coffee'
+            if coffee_box.draw():
+                self.state = 'checklist'
+            if cup_box.draw():
+                self.state = 'checklist_coffee_cup'  
+        pg.display.update()
+        checklist_screen.draw(screen)
+        milk_box.display(screen)
+        coffee_box.display(screen)
+        cup_box.display(screen)
+        coffee_check.display(screen)
+    
+    def checklist_cup(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if milk_box.draw():
+                self.state = 'checklist_milk_cup'
+            if coffee_box.draw():
+                self.state = 'checklist_coffee_cup'
+            if cup_box.draw():
+                self.state = 'checklist'
+        pg.display.update()
+        checklist_screen.draw(screen)
+        milk_box.display(screen)
+        coffee_box.display(screen)
+        cup_box.display(screen)
+        cup_check.display(screen)
+        
+    def checklist_milk_coffee(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if milk_box.draw():
+                self.state = 'checklist_coffee'
+            if coffee_box.draw():
+                self.state = 'checklist_milk'
+            if cup_box.draw():
+                self.state = 'checklist_milk_coffee_cup'
+        pg.display.update()
+        checklist_screen.draw(screen)
+        milk_box.display(screen)
+        coffee_box.display(screen)
+        cup_box.display(screen)
+        milk_check.display(screen)
+        coffee_check.display(screen)
+
+    def checklist_milk_coffee_cup(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if begin_drawing_button.draw():
+                self.state = 'waiting'
+            if milk_box.draw():
+                self.state = 'checklist_coffee_cup'
+            if coffee_box.draw():
+                self.state = 'checklist_milk_cup'
+            if cup_box.draw():
+                self.state = 'checklist_milk_coffee'
         pg.display.update()
         checklist_screen.draw(screen)
         begin_drawing_button.display(screen)
-
+        milk_box.display(screen)
+        coffee_box.display(screen)
+        cup_box.display(screen)
+        milk_check.display(screen)
+        coffee_check.display(screen)
+        cup_check.display(screen)
+    
+    def checklist_coffee_cup(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                pg.sys.exit()
+            if milk_box.draw():
+                self.state = 'checklist_milk_coffee_cup'
+            if coffee_box.draw():
+                self.state = 'checklist_cup'
+            if cup_box.draw():
+                self.state = 'checklist_coffee'
+        pg.display.update()
+        checklist_screen.draw(screen)
+        milk_box.display(screen)
+        coffee_box.display(screen)
+        cup_box.display(screen)
+        coffee_check.display(screen)
+        cup_check.display(screen)
 
     def waiting(self):
         for event in pg.event.get():
@@ -457,17 +633,6 @@ class Menu():
                     self.state = 'done' 
 
 menu = Menu()
-class HomeScreen():
-    '''
-    A subclass of the Button class that initializes the Latte design buttons 
-    on the screen.
-    '''
-    def __init__(self,type):
-        '''
-        Constructs all necessary attributes to initialize the button image.
-        '''
-        super().__init__(type)
-        
 
 
 #----------------------------------------------------------------------------------
@@ -476,6 +641,7 @@ class HomeScreen():
 running = True
 while running:
     menu.state_manager()
+    clock.tick(60)
 #     for event in pg.event.get():
 #         if event.type == pg.QUIT:
 #             running = False
