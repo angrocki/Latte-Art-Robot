@@ -1,3 +1,7 @@
+import sys
+import Latte_UI
+
+
 '''
 Chose Design based on UI input. 
 Functions are imported from different files. 
@@ -5,6 +9,9 @@ Functions are imported from different files.
 from Heart import heart_easy, heart_hard
 from Base import base_simple,  base_complicated
 from Rosetta import rosetta_easy, rosetta_hard,test
+
+sys.path.insert(0,'home/allysonhur/Latte-Art-Robot/Latte_UI')
+
 import random
 while(True):
     try:
@@ -17,7 +24,7 @@ while(True):
             #rosetta_easy()
         if int(cmd_id) == 3:
             print("3")
-            #cmd_id = random.randint(1,2)
+            cmd_id = random.randint(1,2)
 
     except ValueError:
         print ("You must enter integer value 1")
