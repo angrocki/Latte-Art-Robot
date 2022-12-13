@@ -1,6 +1,14 @@
 import pygame as pg
 from Background import *
 from Button import *
+import sys
+import random
+sys.path.append('/home/allysonhur/Latte-Art-Robot/GCodeLatteRobot/GCode-Python')
+from Heart import heart
+from Rosetta import rosetta
+from Base import base
+
+
 screen = pg.display.set_mode((1280,720))
 # naviation images 
 start_button = NavigationButton("Start")
@@ -54,7 +62,10 @@ checklist_screen = Background("Checklist")
 waiting_screen = Background("Waiting")
 done_screen = Background("Done")
 
-
+def rosetta_test():
+        print('hello')
+        print('world')
+        return True 
 
 class Menu():
     def __init__(self):
@@ -354,11 +365,15 @@ class Menu():
                 pg.sys.exit()
             if self.id == 1:
                 print('Drawing heart')
+                base()
+                if heart():
+                    self.state = 'done'
                 self.id = 0
-                # heart_easy()
             if self.id == 2:
-                # rosetta_easy()
                 print('Drawing rosetta')
+                base()
+                if rosetta():
+                    self.state = 'done'
                 self.id = 0
             if self.id == 3:
                 print('Drawing random')
@@ -372,6 +387,10 @@ class Menu():
             if event.type == pg.QUIT:
                 pg.quit()
                 pg.sys.exit()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                if start_button.rect.collidepoint(pg.mouse.get_pos()):
-                    self.state = 'done' 
+            if home_button.draw():
+                self.state = 'home'
+        pg.display.update()
+        done_screen.draw(screen)
+        home_button.display(screen)
+
+

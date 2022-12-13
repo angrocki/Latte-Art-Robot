@@ -3,11 +3,6 @@ from Background import *
 from Button import *
 from Menu import *
 
-import sys
-import random
-sys.path.append('/home/allysonhur/Latte-Art-Robot/GCodeLatteRobot/GCode-Python')
-from Heart import heart_easy
-from Rosetta import rosetta_easy
 pg.init()
 
 #----------------------------------------------------------------------------------
