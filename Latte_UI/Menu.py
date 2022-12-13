@@ -1,35 +1,7 @@
 import pygame as pg
 from Background import *
 from Button import *
-
-
-from GCode-Python import 
-import sys
-sys.path.insert(0,'/home/allysonhur/Latte-Art-Robot/GCodeLatteRobot/')
-pg.init()
-
-#----------------------------------------------------------------------------------
-## SETUP 
-#----------------------------------------------------------------------------------
-timer = 0
-
-# screen settings 
- 
-WIDTH, HEIGHT = 1280, 720
-size = (WIDTH, HEIGHT)
-screen = pg.display.set_mode(size)
-home_background = pg.display.set_mode(size)
-color = (250, 243, 235)
-screen.fill(color)
-
-pg.display.set_caption("Latte Art Display")         # name of window 
-
-clock = pg.time.Clock()                             # set in frames per sec
-
-#----------------------------------------------------------------------------------
-## SPRITE CLASSES (Temp location)
-#----------------------------------------------------------------------------------
-
+screen = pg.display.set_mode((1280,720))
 # naviation images 
 start_button = NavigationButton("Start")
 start_button.setup()
@@ -53,12 +25,12 @@ back_to_choose.setup()
 # startbut.display(screen)
 
 # design images
-heart = DesignButton("Heart")
-heart.setup()
-rosetta = DesignButton("Rosetta")
-rosetta.setup()
-random = DesignButton("Random")
-random.setup()
+heart_design = DesignButton("Heart")
+heart_design.setup()
+rosetta_design = DesignButton("Rosetta")
+rosetta_design.setup()
+random_design = DesignButton("Random")
+random_design.setup()
 
 heart_border = DesignButton("Heart Border")
 heart_border.setup()
@@ -81,6 +53,8 @@ choose_screen = Background("Choose")
 checklist_screen = Background("Checklist")
 waiting_screen = Background("Waiting")
 done_screen = Background("Done")
+
+
 
 class Menu():
     def __init__(self):
@@ -140,19 +114,19 @@ class Menu():
             if event.type == pg.QUIT:
                 pg.quit()
                 pg.sys.exit()
-            if heart.draw():
+            if heart_design.draw():
                 self.state = 'choose_heart'
-            if rosetta.draw():
+            if rosetta_design.draw():
                 self.state = 'choose_rosetta'
-            if random.draw():
+            if random_design.draw():
                 self.state = 'choose_random'
             if back_to_home.draw():
                 self.state = 'home'
         pg.display.update()
         choose_screen.draw(screen)
-        heart.display(screen)
-        rosetta.display(screen)
-        random.display(screen)
+        heart_design.display(screen)
+        rosetta_design.display(screen)
+        random_design.display(screen)
         back_to_home.display(screen)
 
     def choose_heart(self):
@@ -163,11 +137,11 @@ class Menu():
             if event.type == pg.QUIT:
                 pg.quit()
                 pg.sys.exit()
-            if heart.draw():
+            if heart_design.draw():
                 self.state = 'choose_heart'
-            if rosetta.draw():
+            if rosetta_design.draw():
                 self.state = 'choose_rosetta'
-            if random.draw():
+            if random_design.draw():
                 self.state = 'choose_random'
             if next_button.draw():
                 self.state = 'checklist'
@@ -176,10 +150,10 @@ class Menu():
                 self.state = 'home'
         pg.display.update()
         choose_screen.draw(screen)
-        heart.display(screen)
+        heart_design.display(screen)
         heart_border.display(screen)
-        rosetta.display(screen)
-        random.display(screen)
+        rosetta_design.display(screen)
+        random_design.display(screen)
         next_button.display(screen)
         back_to_home.display(screen)
         
@@ -192,11 +166,11 @@ class Menu():
             if event.type == pg.QUIT:
                 pg.quit()
                 pg.sys.exit()
-            if heart.draw():
+            if heart_design.draw():
                 self.state = 'choose_heart'
-            if rosetta.draw():
+            if rosetta_design.draw():
                 self.state = 'choose_rosetta'
-            if random.draw():
+            if random_design.draw():
                 self.state = 'choose_random'
             if next_button.draw():
                 self.state = 'checklist'
@@ -205,10 +179,10 @@ class Menu():
                 self.state = 'home'
         pg.display.update()
         choose_screen.draw(screen)
-        heart.display(screen)
-        rosetta.display(screen)
+        heart_design.display(screen)
+        rosetta_design.display(screen)
         rosetta_border.display(screen)
-        random.display(screen)
+        random_design.display(screen)
         next_button.display(screen)
         back_to_home.display(screen)
 
@@ -220,11 +194,11 @@ class Menu():
             if event.type == pg.QUIT:
                 pg.quit()
                 pg.sys.exit()
-            if heart.draw():
+            if heart_design.draw():
                 self.state = 'choose_heart'
-            if rosetta.draw():
+            if rosetta_design.draw():
                 self.state = 'choose_rosetta'
-            if random.draw():
+            if random_design.draw():
                 self.state = 'choose_random'
             if next_button.draw():
                 self.state = 'checklist'
@@ -233,9 +207,9 @@ class Menu():
                 self.state = 'home'
         pg.display.update()
         choose_screen.draw(screen)
-        heart.display(screen)
-        rosetta.display(screen)
-        random.display(screen)
+        heart_design.display(screen)
+        rosetta_design.display(screen)
+        random_design.display(screen)
         random_border.display(screen)
         next_button.display(screen)
         back_to_home.display(screen)
@@ -378,9 +352,18 @@ class Menu():
             if event.type == pg.QUIT:
                 pg.quit()
                 pg.sys.exit()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                if start_button.rect.collidepoint(pg.mouse.get_pos()):
-                    self.state = 'waiting' 
+            if self.id == 1:
+                print('Drawing heart')
+                self.id = 0
+                # heart_easy()
+            if self.id == 2:
+                # rosetta_easy()
+                print('Drawing rosetta')
+                self.id = 0
+            if self.id == 3:
+                print('Drawing random')
+                self.id = random.randint(1,2)
+                self.id = 0
         pg.display.update()
         waiting_screen.draw(screen)
 
@@ -392,16 +375,3 @@ class Menu():
             if event.type == pg.MOUSEBUTTONDOWN:
                 if start_button.rect.collidepoint(pg.mouse.get_pos()):
                     self.state = 'done' 
-
-menu = Menu()
-
-
-#----------------------------------------------------------------------------------
-## UI LOOP
-#----------------------------------------------------------------------------------
-running = True
-while running:
-    menu.state_manager()
-clock.tick(60)
-    
-
