@@ -22,11 +22,11 @@ def rosetta():
     angle = -40
     move_controller(None,None,None,angle)
     enable_solenoid()                           #open valve
-    while angle > 5:
+    while angle < -5:
         x,y = make_sine(10,5,90,200)
         for i in range(len(x)):
-            move_controller(None,y[i])
-            angle-=1
+            move_controller(None,y[i],None,None)
+            angle+=1
     # while angle > 0:
     #     x,y = make_sine(15,5,90,200)
     #     for i in range(len(x)):
