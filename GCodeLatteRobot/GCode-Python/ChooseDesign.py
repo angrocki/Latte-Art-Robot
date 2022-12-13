@@ -10,6 +10,7 @@ from GCodeCommands import *
 while(True):
     try:
         cmd_id = int(input("Please enter a command ID for Different Patterns(1: base, 2: heart, 3: rosetta, 4: test, 6-7:solenoid on/off): ")) 
+        print(cmd_id)
         if int(cmd_id) < 0 or int(cmd_id) > 7:
             print ("Values other than 1-6 are ignored.")
         # Base1

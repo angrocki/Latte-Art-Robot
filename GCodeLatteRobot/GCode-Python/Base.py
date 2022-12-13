@@ -10,7 +10,6 @@ def base():
     enable_X()
     enable_Y()
     enable_Z()
-    go_home()
     disable_Z()
     go_cup_origin()
     diameter = 25 ##mm
@@ -27,5 +26,5 @@ def base():
     disable_solenoid()
     set_speed(10)
     move_controller(0,0)
-base()
+
 

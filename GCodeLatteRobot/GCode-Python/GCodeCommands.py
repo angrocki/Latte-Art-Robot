@@ -8,7 +8,7 @@ import numpy as np
 #/dev/cu.usbmodem1101 An
 #COM16 Jacob
 #/dev/ttyACM0 Allyson
-arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
+arduino = Serial(port = 'COM16', baudrate=115200, timeout=0)
 time.sleep(2)
 
 def go_home():
@@ -51,15 +51,19 @@ def move_controller(xpos=None,ypos=None,zpos=None,angle=None):
     while True:
         message = "G1 "
         line = arduino.readline().decode().rstrip()
-
+        print("s")
         if line == '>':
-            if type(xpos) == float:
+            print(type(xpos))
+            print(type(ypos))
+            print(type(zpos))
+            print(type(angle))
+            if type(xpos) == float or type(xpos) ==int:
                 message += f"X{xpos} "
-            if type(ypos) == float:
+            if type(ypos) == float or type(ypos)==int:
                 message += f"Y{ypos} "
-            if type(zpos) == float:
+            if type(zpos) == float or type(zpos) ==int:
                 message += f"Z{zpos} "
-            if type(angle) == float:
+            if type(angle) == float or type(angle) ==int:
                 message += f"T{angle}"
 
             message += "\n"
