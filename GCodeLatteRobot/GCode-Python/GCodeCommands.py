@@ -5,9 +5,9 @@ from serial import Serial
 import time
 import math
 import numpy as np
-#/dev/cu.usbmodem1101 AN
+#/dev/cu.usbmodem1101 An
 #COM16 Jacob
-#Allyson /dev/ttyACM0
+#/dev/ttyACM0 Allyson
 arduino = Serial(port = '/dev/ttyACM0', baudrate=115200, timeout=0)
 time.sleep(2)
 
