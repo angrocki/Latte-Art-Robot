@@ -23,18 +23,19 @@ def rosetta():
     move_controller(None,None,None,angle)
     enable_solenoid()                           #open valve
     while angle > 5:
-        angle-=1
-        move_controller(None,-y,None,None,angle)
-    while angle > 0:
-        move_controller(None,None,31, None)
-        move_controller(x_count)
-        x_count += x_count
-        angle -= 1
-    if angle == 0:
-        disable_solenoid()
-        move_controller(None, None, 31, None)
-        enable_solenoid()
-        move_controller(95.25)
+        x,y = make_sine(10,5,90,200)
+        for i in range(len(x)):
+            move_controller(None,y[i])
+            angle-=1
+    # while angle > 0:
+    #     x,y = make_sine(15,5,90,200)
+    #     for i in range(len(x)):
+    #         move_controller(x[i], y[i])
+    # if angle == 0:
+    #     disable_solenoid()
+    #     move_controller(None, None, 31, None)
+    #     enable_solenoid()
+    #     move_controller(95.25)
     disable_solenoid()
     disable_X()
     disable_Y()
@@ -46,14 +47,14 @@ def test():
     """
     A function with the list of G-Code commands that test the sin function.
     """
+    go_home()
     enable_X()
     enable_Y()
-    go_cup_origin()
-    set_speed(90)
-    x,y = make_sine(6,12,20,75)
-    for i in range(len(x)):
-        #move_controller(x[i], y[i], None, None)
-        move_controller(x[i],y[i])
-        print(x[i], y[i])
+    disable_Z()
+    disable_T()
 
-test()
+    go_cup_origin()
+    x,y = make_sine(10,5,90,200)
+    for i in range(len(x)):
+        move_controller(x[i], y[i])
+        print(x[i],y[i])
