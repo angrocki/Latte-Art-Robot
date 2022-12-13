@@ -30,5 +30,5 @@ def heart():
     disable_X()
     disable_Y()
     disable_Z()
-    return "done"
+    return True
     

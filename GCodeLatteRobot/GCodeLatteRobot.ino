@@ -311,7 +311,7 @@ void go_home(){
       controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
     }
     px=47;
-    py=-75;
+    py=-39;
  }
   void cup_origin(){
     x_origin();

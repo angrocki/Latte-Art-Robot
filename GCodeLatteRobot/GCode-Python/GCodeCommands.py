@@ -8,7 +8,7 @@ import numpy as np
 #/dev/cu.usbmodem1101 An
 #COM16 Jacob
 #/dev/ttyACM0 Allyson
-arduino = Serial(port = '/dev/ttyACM0', baudrate=115200, timeout=0)
+arduino = Serial(port = '/dev/cu.usbmodem1101', baudrate=115200, timeout=0)
 time.sleep(2)
 
 def go_home():
@@ -53,13 +53,13 @@ def move_controller(xpos=None,ypos=None,zpos=None,angle=None):
         line = arduino.readline().decode().rstrip()
 
         if line == '>':
-            if type(xpos) == int:
+            if type(xpos) == float:
                 message += f"X{xpos} "
-            if type(ypos) == int:
+            if type(ypos) == float:
                 message += f"Y{ypos} "
-            if type(zpos) == int:
+            if type(zpos) == float:
                 message += f"Z{zpos} "
-            if type(angle) == int:
+            if type(angle) == float:
                 message += f"T{angle}"
 
             message += "\n"
@@ -306,10 +306,11 @@ def make_sine(amplitude, frequency, distance, points):
     '''
     x = []
     y = []
-
     x = np.linspace(0,distance,points)
+    x = x.tolist()
     for i in range(0,len(x)):
         y.append(round(amplitude*math.sin(frequency*x[i]),1))
+        x[i]=round(x[i],1)
     return x, y
 
 
