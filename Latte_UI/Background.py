@@ -1,6 +1,9 @@
 import pygame as pg
 
 class Background():
+    """
+    Displays a background image for the different pages
+    """
     def __init__(self, type):
 
         self._type = type
@@ -21,5 +24,8 @@ class Background():
         elif self._type == "Done":
             self._surface = pg.image.load("UI_Images/background/done.png").convert_alpha()
             self._surface = pg.transform.scale(self._surface, size)
-    def draw(self,surface):
+    def display(self,surface):
+        '''
+        Displays the background on the UI screen
+        '''
         surface.blit(self._surface, (0,0))
