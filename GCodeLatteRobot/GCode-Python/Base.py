@@ -14,13 +14,13 @@ def base_simple():
     go_home()
     disable_Z()
     go_cup_origin()
-    diameter = 30 ##mm
+    diameter = 25 ##mm
     radius = diameter/2
     points = 50
     x, y = make_circle(radius, points)
     circles = 2
     move_XY(x[0],y[0])
-    set_speed(70)
+    set_speed(80)
     enable_solenoid()
     for i in range(circles):
         for i in range(len(x)):

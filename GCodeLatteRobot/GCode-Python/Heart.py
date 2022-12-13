@@ -12,7 +12,7 @@ def heart_easy():
     go_cup_origin()
     enable_Z()
     set_speed_Z(80)
-    move_z(65)
+    move_z(50)
     set_speed_T(10)
     angle = -40
     tilt(angle)
@@ -20,7 +20,8 @@ def heart_easy():
     #Move to above the cup
     enable_solenoid()
     set_speed_T(1)
-    tilt(0)
+    tilt(10)
+    disable_T()
     set_speed_Z(250)
     set_speed(70)
     move_controller(30, None, 40, None)

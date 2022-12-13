@@ -61,13 +61,13 @@ float reset;
 // Processing G-Code
 //------------------------------------------------------------------------------
 // INITIALIZING Solenoid
-#define SOLENOID_PIN           32
+#define SOLENOID_PIN       17
+#define TEMP_SENSOR_BED 1
 // INITIALIZING MOTOR PINS 
 
 #define MOTOR_STEPS 200
 #define MICROSTEPS 16
 #define RPM 120
-
 #define X_STEP_PIN         A0
 #define X_DIR_PIN          A1
 #define X_ENABLE_PIN       38
@@ -310,10 +310,11 @@ void go_home(){
       y_switch = digitalRead(Y_MIN_PIN);
       controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
     }
-    px=47;
-    py=-75;
+    px=44;
+    py=-65;
  }
   void cup_origin(){
+    set_speed(50);
     x_origin();
     y_origin(); 
 }
@@ -467,16 +468,18 @@ void help() {
 
 void setup() {
   motor_setup();
-  solenoid_setup();
   Serial.begin(BAUD);
   help();
   go_home();
+  cup_origin();
   X.disable();
   Y_1.disable();
   Y_2.disable();
   Z.disable();
   T.disable();
   ready();
+  solenoid_setup();
+  disable_solenoid();
 }
 
 void loop() {
