@@ -40,11 +40,20 @@ def rosetta():
     disable_Y()
     disable_Z()
     disable_T()
+    return True
 
 def test():
     """
     A function with the list of G-Code commands that test the sin function.
     """
-    x,y = make_sine(10,5,90,200)
+    enable_X()
+    enable_Y()
+    go_cup_origin()
+    set_speed(90)
+    x,y = make_sine(6,12,20,75)
     for i in range(len(x)):
-        move_controller(x[i], y[i], None, None)
+        #move_controller(x[i], y[i], None, None)
+        move_controller(x[i],y[i])
+        print(x[i], y[i])
+
+test()

@@ -23,8 +23,9 @@ def base():
     enable_solenoid()
     for i in range(circles):
         for i in range(len(x)):
-            move_controller(x[i,y[i]])
+            move_controller(x[i],y[i])
     disable_solenoid()
     set_speed(10)
     move_controller(0,0)
+base()
 
