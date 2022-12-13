@@ -3,7 +3,8 @@ from Background import *
 from DesignButton import *
 from NavigationButton import *
 import sys
-import random
+# import random
+
 sys.path.append('/home/allysonhur/Latte-Art-Robot/GCodeLatteRobot/GCode-Python')
 # from Heart import heart
 # from Rosetta import rosetta
@@ -17,56 +18,56 @@ screen = pg.display.set_mode((1280,720))
 #----------------------------------------------------------------------------------
 ## NAVIGATION BUTTON OBJECTS
 #----------------------------------------------------------------------------------
-start_button = NavigationButton("Start")
+start_button = NavigationButton('Start')
 start_button.setup()
 
-home_button = NavigationButton("Home")
+home_button = NavigationButton('Home')
 home_button.setup()
 
-next_button = NavigationButton("Next")
+next_button = NavigationButton('Next')
 next_button.setup()
 
-begin_drawing_button = NavigationButton("Begin Drawing")
+begin_drawing_button = NavigationButton('Begin Drawing')
 begin_drawing_button.setup()
 
-back_to_home = NavigationButton("Back")
+back_to_home = NavigationButton('Back')
 back_to_home.setup()
 
-back_to_choose = NavigationButton("Back")
+back_to_choose = NavigationButton('Back')
 back_to_choose.setup()
 
 #----------------------------------------------------------------------------------
 ## DESIGN BUTTON OBJECTS
 #----------------------------------------------------------------------------------
-heart_design = DesignButton("Heart")
+heart_design = DesignButton('Heart')
 heart_design.setup()
-rosetta_design = DesignButton("Rosetta")
+rosetta_design = DesignButton('Rosetta')
 rosetta_design.setup()
-random_design = DesignButton("Random")
+random_design = DesignButton('Random')
 random_design.setup()
 
-heart_border = DesignButton("Heart Border")
+heart_border = DesignButton('Heart Border')
 heart_border.setup()
-rosetta_border = DesignButton("Rosetta Border")
+rosetta_border = DesignButton('Rosetta Border')
 rosetta_border.setup()
-random_border = DesignButton("Random Border")
+random_border = DesignButton('Random Border')
 random_border.setup()
 
-milk_check = DesignButton("Milk Check")
+milk_check = DesignButton('Milk Check')
 milk_check.setup()
-coffee_check = DesignButton("Coffee Check")
+coffee_check = DesignButton('Coffee Check')
 coffee_check.setup()
-cup_check = DesignButton("Cup Check")
+cup_check = DesignButton('Cup Check')
 cup_check.setup()
 
 #----------------------------------------------------------------------------------
 ## BACKGROUND OBJECTS 
 #----------------------------------------------------------------------------------
-home_screen = Background("Home")
-choose_screen = Background("Choose")
-checklist_screen = Background("Checklist")
-waiting_screen = Background("Waiting")
-done_screen = Background("Done")
+home_screen = Background('Home')
+choose_screen = Background('Choose')
+checklist_screen = Background('Checklist')
+waiting_screen = Background('Waiting')
+done_screen = Background('Done')
 
 #----------------------------------------------------------------------------------
 ## TEST INTEGRATION BETWEEN UI AND GCODE FUNCTION
@@ -140,9 +141,8 @@ class Menu():
             if event.type == pg.QUIT:
                 pg.quit()
                 pg.sys.exit()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                if start_button.rect.collidepoint(pg.mouse.get_pos()):
-                    self.state = 'choose' 
+            if start_button.click():
+                self.state = 'choose'
         pg.display.update()
         home_screen.display(screen)
         start_button.display(screen)

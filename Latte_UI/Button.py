@@ -1,5 +1,4 @@
 import pygame as pg
-import random
 
 class Button(pg.sprite.Sprite):
     """
@@ -7,6 +6,8 @@ class Button(pg.sprite.Sprite):
 
     Attributes:
         _type: The button's functionality type.
+        _x: An integer representing the width of the image
+        _y: An integer representing the height of the image
         _clicked: A boolean representing whether the button has been clicked or not.
         _rect: The hitbox of the button.
 
@@ -14,14 +15,11 @@ class Button(pg.sprite.Sprite):
     def __init__(self, type):
 
         self._type = type
-        # sets the position
         self._x = 0
         self._y = 0
+        self._rect = 0
 
         self.clicked = True
-
-        # self.clicked = False
-        self.rect = 0
 
     def set_position(self, x, y):
         '''
@@ -36,19 +34,7 @@ class Button(pg.sprite.Sprite):
         self._x = x - self._surface.get_width()/2
         self._y = y - self._surface.get_height()/2
 
-        self.rect = self._surface.get_rect(topleft=(self._x,self._y))
-
-    # def set_rect(self, cen_x, cen_y):
-    #     '''
-    #     Sets the rectangular hitbox of the button.
-
-    #     Args:
-    #         cen_x: 
-    #             An integer representing the center x coordinate of the button.
-    #         cen_y: 
-    #             An integer representing the center y coordinate of the button.
-    #     '''
-    #     self.rect = self._surface.get_rect(topleft=(cen_x,cen_y))
+        self._rect = self._surface.get_rect(topleft=(self._x,self._y))
 
     def scale(self,x_scale,y_scale):
         '''
@@ -62,7 +48,7 @@ class Button(pg.sprite.Sprite):
         '''
         self._surface = pg.transform.smoothscale(self._surface, (x_scale, y_scale))
 
-    def display(self, screen):
+    def display(self, surface):
         '''
         Displays the buttons on the UI screen.
 
@@ -70,14 +56,14 @@ class Button(pg.sprite.Sprite):
             screen: 
                 The surface of the UI's background display.
         '''
-        screen.blit(self._surface, (self._x, self._y))
+        surface.blit(self._surface, (self._x, self._y))
     
     def click(self):
         '''
         Returns action = True if button has been pressed by the user.
         '''
         action = False
-        if self.rect.collidepoint(pg.mouse.get_pos()):
+        if self._rect.collidepoint(pg.mouse.get_pos()):
             if pg.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
                 action = True
