@@ -310,8 +310,8 @@ void go_home(){
       y_switch = digitalRead(Y_MIN_PIN);
       controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
     }
-    px=44;
-    py=-65;
+    px=47;
+    py=-39;
  }
   void cup_origin(){
     set_speed(50);
