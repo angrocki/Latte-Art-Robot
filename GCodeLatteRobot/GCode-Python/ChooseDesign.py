@@ -1,32 +1,30 @@
 '''
-Chose Design based on keyboard input. 
+Chose a latte design based on keyboard input. 
 Functions are imported from different files. 
 '''
-from Heart import heart_easy, heart_hard
-from Base import base_simple,  base_complicated
-from Rosetta import rosetta_easy, rosetta_hard,test
+from Heart import heart
+from Base import base
+from Rosetta import rosetta,test
+from GCodeCommands import *
 
 while(True):
     try:
-        cmd_id = int(input("Please enter a command ID for Different Patterns(1-2: base, 3-4: heart, 5-6 rosetta): ")) 
-        if int(cmd_id) < 0 or int(cmd_id) > 8:
-            print ("Values other than 1 and 2 are ignored.")
+        cmd_id = int(input("Please enter a command ID for Different Patterns(1: base, 2: heart, 3: rosetta, 4: test, 6-7:solenoid on/off): ")) 
+        if int(cmd_id) < 0 or int(cmd_id) > 7:
+            print ("Values other than 1-6 are ignored.")
         # Base1
         elif int(cmd_id) == 1: 
-            base_simple()
-        elif int(cmd_id) == 2:  
-            base_complicated()
-        # Heart
-        elif int(cmd_id) == 3: 
-            heart_easy()
-        elif int(cmd_id) == 4:  
-            heart_hard()
+            base()
+        elif int(cmd_id) == 2: 
+            heart()
         # Rosetta
-        elif int(cmd_id) == 5: 
-            rosetta_easy()
-        elif int(cmd_id) == 6:  
-            rosetta_hard()
-        elif int(cmd_id) == 7:
+        elif int(cmd_id) == 3: 
+            rosetta()
+        elif int(cmd_id) == 4:
             test()
+        elif int(cmd_id) == 5:
+            enable_solenoid()
+        elif int(cmd_id) == 6:
+            disable_solenoid()
     except ValueError:
-        print ("You must enter integer value 1")
+        print ("You must enter integer value within the range of 1-6")

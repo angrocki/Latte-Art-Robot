@@ -2,10 +2,12 @@
 G-Code to make heart latte design.
 """
 from GCodeCommands import *
-"""
-Pour Straight no squickly 
-"""
-def heart_easy(): 
+
+def heart(): 
+    """
+    A function with the list of G-Code commands to make a latte heart
+    and returns a string "done" when commands are completed. 
+    """
     enable_T()
     enable_X()
     enable_Y()
@@ -15,20 +17,13 @@ def heart_easy():
     move_controller(None,None,65,None)
     set_speed_T(10)
     angle = -40
-    # tilt(angle)
     move_controller(None,None,None,angle)
-    #Move distance center function
-    #Move to above the cup
     enable_solenoid()
     set_speed_T(1)
-    # tilt(0)
     move_controller(None,None,None,0)
     set_speed_Z(250)
     set_speed(70)
     move_controller(30, None, 40, None)
-    #move_z(0)
-    #move_x(5)
-    #move_xz(-10, 0)
     disable_solenoid()
     disable_T()
     go_home()
@@ -36,11 +31,4 @@ def heart_easy():
     disable_Y()
     disable_Z()
     return "done"
-    
-    
-
-
-    
-def heart_hard():
-    enable_solenoid()
     

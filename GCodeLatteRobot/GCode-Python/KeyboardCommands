@@ -1,0 +1,4 @@
+import keyboard
+
+keyboard.wait("p")
+print("You pressed p")
