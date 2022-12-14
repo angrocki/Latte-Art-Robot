@@ -64,11 +64,11 @@ class DesignButton(Button):
 
         # Check button setup
         if self._type == 'Milk Check':
-            self.set_position(890,825)
-            self.scale(700,400)
+            self.set_position(290,317)
+            self.scale(75,75)
         if self._type == 'Coffee Check':
-            self.set_position(890,950)
-            self.scale(700,400)
+            self.set_position(290,440)
+            self.scale(75,75)
         if self._type == 'Cup Check':
-            self.set_position(890,1070)
-            self.scale(700,400)
+            self.set_position(290,565)
+            self.scale(75,75)

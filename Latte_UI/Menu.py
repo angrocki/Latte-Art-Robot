@@ -3,12 +3,12 @@ from Background import *
 from DesignButton import *
 from NavigationButton import *
 import sys
-# import random
+import random
 
-sys.path.append('/home/allysonhur/Latte-Art-Robot/GCodeLatteRobot/GCode-Python')
-# from Heart import heart
-# from Rosetta import rosetta
-# from Base import base
+sys.path.append('Latte_UI\GCode-Python')
+from GCode_Python.Heart import *
+from GCode_Python.Rosetta import *
+from GCode_Python.Base import *
 
 #----------------------------------------------------------------------------------
 ## SCREEN
@@ -428,19 +428,19 @@ class Menu():
                 pg.sys.exit()
             if self.id == 1:
                 print('Drawing heart')
-                # base()
-                # if heart():
-                #     self.state = 'done'
-                if rosetta_test():
+                base()
+                if heart():
                     self.state = 'done'
+                # if rosetta_test():
+                #     self.state = 'done'
                 self.id = 0
             if self.id == 2:
                 print('Drawing rosetta')
-                # base()
-                # if rosetta():
-                #     self.state = 'done'
-                if rosetta_test():
+                base()
+                if rosetta():
                     self.state = 'done'
+                # if rosetta_test():
+                #     self.state = 'done'
                 self.id = 0
             if self.id == 3:
                 print('Drawing random')
