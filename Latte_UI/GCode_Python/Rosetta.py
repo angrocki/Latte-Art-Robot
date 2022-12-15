@@ -9,41 +9,50 @@ def rosetta():
     A function with the list of G-Code commands to make a latte rosetta,
     and returns a string "Done" when the commands are completed.
     """
-    angle = 40
     x_count = 0
     enable_T()
     enable_X()
     enable_Y()
     go_cup_origin()
     enable_Z()
+    
     set_speed_Z(80)
     move_controller(None,None,65,None)
     set_speed_T(10)
+    set_speed(80)
     angle = -40
-    angle_step = 40/50
+    angle_step = round(40/50,1)
     move_controller(None,None,None,angle)
     enable_solenoid()                           #open valve
-    while angle < -5:
-        x,y = make_sine(10,5,40,50)
+    while angle <= -15:
+        x,y = make_sine(10,5,30,50)
         for i in range(len(x)):
-            if angle > 15:
+            if angle > -15:
                 break
             move_controller(None,y[i],None,None)
-            angle+=1
-    while angle > 0:
-        x,y = make_sine(15,5,90,200)
+            angle = round(angle + angle_step,1)
+            move_controller(None, None, None, angle)
+    while angle < 0:
+        x,y = make_sine(15,1,50,50)
         for i in range(len(x)):
-            move_controller(x[i], y[i])
+            if angle == 0:
+                break
+            move_controller(x[i]*-1, y[i])
+            angle = round(angle + angle_step,1)
+            move_controller(None, None, None, angle)    
     if angle == 0:
         disable_solenoid()
         move_controller(None, None, 31, None)
         enable_solenoid()
-        move_controller(95.25)
+        move_controller(30)
+    disable_T()
+    go_home()
     disable_solenoid()
     disable_X()
     disable_Y()
     disable_Z()
-    disable_T()
+    
+    
     return True
 
 def test():

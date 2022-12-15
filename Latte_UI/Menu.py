@@ -428,7 +428,7 @@ class Menu():
                 pg.sys.exit()
             if self.id == 1:
                 print('Drawing heart')
-                #base()
+                base()
                 if heart():
                     self.state = 'done'
                 # if rosetta_test():
