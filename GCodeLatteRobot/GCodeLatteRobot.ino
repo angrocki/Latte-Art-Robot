@@ -72,7 +72,7 @@ float reset;
 #define X_STEP_PIN         A0
 #define X_DIR_PIN          A1
 #define X_ENABLE_PIN       38
-#define X_MIN_PIN           3
+#define X_MIN_PIN          18
 #define X_MAX_PIN          -1 //PIN 2 is used
 
 // Y Motor
@@ -86,7 +86,7 @@ float reset;
 #define Z_STEP_PIN         46
 #define Z_DIR_PIN          48
 #define Z_ENABLE_PIN       62
-#define Z_MIN_PIN          18
+#define Z_MIN_PIN           3
 #define Z_MAX_PIN          -1 //PIN 19 is used
 
 // Tilt Motor
@@ -316,11 +316,13 @@ void y_origin() {
  * Moves each axis motor until it reaches the limit switch, at which point it is "zeroed."
  */
 void go_home(){
-    // Z-AXIS ZEROING
+     // Z-AXIS ZEROING
     z_switch = digitalRead(Z_MIN_PIN);                // reads the pin 
+    Serial.println(z_switch);
     while (z_switch == 1) {                           // while limit is inactivated 
         z_switch = digitalRead(Z_MIN_PIN);
         controller.rotate(0,0,0,-1,0);                // move z-axis motor
+
     }
     
     // X-AXIS ZEROING
@@ -336,6 +338,8 @@ void go_home(){
       y_switch = digitalRead(Y_MIN_PIN);
       controller.rotate(0,-1,-1,0,0);                 // move y-axis motors
     }
+    
+   
     px=47;
     py=-39;
  }

@@ -30,6 +30,7 @@ def heart():
     move_controller(30, None, 40, None)
     disable_solenoid()
     disable_T()
+    time.sleep(1.5)
     go_home()
     disable_X()
     disable_Y()

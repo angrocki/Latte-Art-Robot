@@ -14,7 +14,7 @@ def heart():
     go_cup_origin()
     enable_Z()
     set_speed_Z(80)
-    move_controller(None,None,45,None)
+    move_controller(None,None,65,None)
     set_speed_T(10)
     angle = -40
     move_controller(None,None,None,angle)
@@ -22,7 +22,7 @@ def heart():
     set_speed_T(1)
     move_controller(None,None,None,0)
     print("test")
-    set_speed_Z(250)
+    set_speed_Z(125)
     set_speed(70)
     move_controller(30, None, 40, None)
     disable_solenoid()
